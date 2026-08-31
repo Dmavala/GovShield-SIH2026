@@ -198,6 +198,19 @@ class LexicalAnalyzer:
                     best_match_entity = portal_data
                     impersonation_type = "typosquatting"
 
+        
+        # 3.5 TLD Typosquatting (e.g. g0v, nic-in, gov-in)
+        if not is_genuine_gov_tld:
+            tld_squat_patterns = ['g0v', 'gov-in', 'nic-in', 'govin', 'nicin', 'govindia']
+            if any(p in normalized_stem for p in tld_squat_patterns):
+                highest_similarity = max(highest_similarity, 0.95)
+                best_match_entity = {
+                    "id": "tld_squat",
+                    "name": "Indian Government (TLD Spoof)",
+                    "primary_domain": "gov.in"
+                }
+                impersonation_type = "tld_typosquatting"
+
         # 4. Generalized Government Token & Scheme Analysis
         if not is_genuine_gov_tld and not best_match_entity:
             domain_tokens = set(main_host_stem.replace('.', '-').split('-'))
@@ -254,7 +267,11 @@ class LexicalAnalyzer:
             reasons.append(f"High randomness entropy ({entropy}) in domain name.")
 
         if best_match_entity and not is_genuine_gov_tld:
-            if impersonation_type == "brand_injection":
+            if impersonation_type == "tld_typosquatting":
+                risk_score += 85
+                anomalies.append("TLD_SPOOFING")
+                reasons.append(f"CRITICAL: Domain spoofs the '.gov.in' top-level domain to appear as an official government site.")
+            elif impersonation_type == "brand_injection":
                 risk_score += 55
                 anomalies.append("GOV_BRAND_IMPERSONATION")
                 reasons.append(f"Unauthorized non-government domain uses official name / keywords of '{best_match_entity['name']}'.")
