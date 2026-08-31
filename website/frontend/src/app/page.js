@@ -24,7 +24,7 @@ export default function Home() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/scan", {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL || "https://govshield.onrender.com/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url })
