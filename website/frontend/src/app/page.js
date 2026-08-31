@@ -24,7 +24,7 @@ export default function Home() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("http://localhost:8000/api/scan", {
+      const res = await fetch("http://127.0.0.1:8000/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url })
@@ -99,9 +99,9 @@ export default function Home() {
                     <span id="verdictBadge" className={`verdict-badge-clean ${getVerdictClass(result.risk_score)}`}>
                       {result.verdict}
                     </span>
-                    <div className="target-url-line" id="urlHeadline">{result.target_url}</div>
+                    <div className="target-url-line" id="urlHeadline">{result.target_entity || url}</div>
                     <p className="verdict-summary-line" id="verdictSummary">
-                      Node.js heuristic engine completed full scan of target URL.
+                      {result.summary || "Python AI Fusion Engine completed full scan of target URL."}
                     </p>
                   </div>
                 </div>
@@ -118,10 +118,12 @@ export default function Home() {
                   <div className="step-number">01</div>
                   <div className="step-content">
                     <div className="step-header">
-                      <span className="step-title">Domain Lexical Analysis</span>
+                      <span className="step-title">Lexical & DOM Analysis</span>
                       <span className="step-status" style={{color: 'var(--color-safe)'}}>[PASS]</span>
                     </div>
-                    <p className="step-desc">Checked for typosquatting & homoglyphs against government TLDs.</p>
+                    <p className="step-desc">
+                      {result.reasons && result.reasons.length > 0 ? result.reasons[0] : "Checked for typosquatting & homoglyphs against government TLDs."}
+                    </p>
                   </div>
                 </div>
 
@@ -129,16 +131,12 @@ export default function Home() {
                   <div className="step-number">02</div>
                   <div className="step-content">
                     <div className="step-header">
-                      <span className="step-title">Screenshot Telemetry</span>
+                      <span className="step-title">Threat Fusion Signal</span>
                       <span className="step-status" style={{color: 'var(--color-safe)'}}>[PASS]</span>
                     </div>
-                    {result.screenshot_id ? (
-                      <p className="step-desc" style={{marginTop: "5px"}}>
-                        <a href={result.screenshot_id} target="_blank" rel="noreferrer" style={{color: '#999', textDecoration: 'underline'}}>View Captured Screenshot</a>
-                      </p>
-                    ) : (
-                      <p className="step-desc">Failed to capture screenshot.</p>
-                    )}
+                    <p className="step-desc">
+                       {result.reasons && result.reasons.length > 1 ? result.reasons[1] : "Evaluated visual similarities and DOM structures."}
+                    </p>
                   </div>
                 </div>
               </div>
