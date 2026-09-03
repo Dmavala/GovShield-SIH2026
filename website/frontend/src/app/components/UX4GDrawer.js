@@ -185,14 +185,11 @@ export default function UX4GDrawer({
         </div>
 
         {/* Footer Bar with Reset */}
-        <div className="ux4g-drawer-footer">
-          <button className="ux4g-reset-btn" onClick={handleReset}>
+        <div className="ux4g-drawer-footer" style={{ justifyContent: 'center' }}>
+          <button className="ux4g-reset-btn" onClick={handleReset} style={{ width: '100%', justifyContent: 'center' }}>
             <span>🔄</span>
             <span>{t.resetAll || "Reset"}</span>
           </button>
-          <a href="https://ux4g.gov.in" target="_blank" rel="noreferrer" className="ux4g-help-link">
-            {t.needHelp || "Need Help?"}
-          </a>
         </div>
 
       </div>
