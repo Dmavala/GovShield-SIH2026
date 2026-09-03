@@ -13,7 +13,7 @@
         android:layout_height="4dp"
         android:background="#FF9933" />
 
-    <!-- Header with Official Logo -->
+    <!-- Header with Official Scaled Logo -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,8 +24,8 @@
 
         <ImageView
             android:id="@+id/imgLogo"
-            android:layout_width="54dp"
-            android:layout_height="64dp"
+            android:layout_width="56dp"
+            android:layout_height="68dp"
             android:src="@drawable/govshield_logo"
             android:contentDescription="GovShield Sovereign Emblem" />
 
@@ -52,15 +52,6 @@
                 android:textSize="12sp"
                 android:textColor="#64748B" />
         </LinearLayout>
-
-        <!-- Audio Help Button -->
-        <ImageButton
-            android:id="@+id/btnVoiceHelp"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_btn_speak_now"
-            android:contentDescription="Listen Voice Guidance" />
     </LinearLayout>
 
     <!-- Language Quick Bar -->
@@ -199,7 +190,7 @@
             android:id="@+id/txtStatusDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📢 ऑडियो सहायता: बड़े शील्ड बटन को दबाकर सुरक्षा चालू करें।"
+            android:text="बड़े शील्ड बटन को दबाकर सुरक्षा चालू करें।"
             android:textSize="14sp"
             android:textColor="#334155"
             android:lineSpacingExtra="4dp" />

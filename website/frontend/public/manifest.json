@@ -1,0 +1,24 @@
+{
+  "name": "GovShield Sentinel",
+  "short_name": "GovShield",
+  "description": "National Cyber Defense & Solo Phishing Portal Protection System",
+  "start_url": "/app-preview",
+  "display": "standalone",
+  "background_color": "#0b1329",
+  "theme_color": "#5c3cf6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

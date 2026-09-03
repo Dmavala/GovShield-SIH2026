@@ -16,14 +16,10 @@ import android.widget.*
 
 /**
  * GovShield Citizen Mobile Activity
- * Tailored specifically for zero-literacy citizens:
- * - 1-Tap Giant Animated Shield Activation
- * - Auto-spoken Audio Guidance in 12 Indian Languages
- * - Instant Emergency 1930 Helpline Access
+ * Solo On-Device 1-Tap Activation
  */
 class MainActivity : Activity() {
 
-    private lateinit var audioGuide: AudioGuide
     private var isProtected = false
     private val VPN_REQUEST_CODE = 1454
 
@@ -45,11 +41,6 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        audioGuide = AudioGuide(this) {
-            // Auto-speak welcome instruction after init
-            audioGuide.speak("welcome")
-        }
-
         btnBigShield = findViewById(R.id.btnBigShield)
         txtShieldIcon = findViewById(R.id.txtShieldIcon)
         txtShieldStatus = findViewById(R.id.txtShieldStatus)
@@ -58,7 +49,6 @@ class MainActivity : Activity() {
         viewPulseRing = findViewById(R.id.viewPulseRing)
 
         setupShieldGraphics()
-        setupLanguageButtons()
         setupListeners()
 
         registerReceiver(vpnStateReceiver, IntentFilter("gov.shield.sentinel.VPN_STATE_CHANGED"))
@@ -102,9 +92,8 @@ class MainActivity : Activity() {
                     action = GovShieldVpnService.ACTION_DISCONNECT
                 }
                 startService(intent)
-                audioGuide.speak("deactivated")
             } else {
-                // Activate VpnService
+                // Activate Solo On-Device VpnService
                 val vpnIntent = VpnService.prepare(this)
                 if (vpnIntent != null) {
                     startActivityForResult(vpnIntent, VPN_REQUEST_CODE)
@@ -114,18 +103,8 @@ class MainActivity : Activity() {
             }
         }
 
-        // Voice Help Icon
-        findViewById<ImageButton>(R.id.btnVoiceHelp).setOnClickListener {
-            if (isProtected) {
-                audioGuide.speak("activated")
-            } else {
-                audioGuide.speak("welcome")
-            }
-        }
-
         // 1930 Helpline Call
         findViewById<Button>(R.id.btnHelpline1930).setOnClickListener {
-            audioGuide.speak("helpline")
             val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:1930"))
             startActivity(callIntent)
         }
@@ -137,7 +116,6 @@ class MainActivity : Activity() {
                 action = GovShieldVpnService.ACTION_CONNECT
             }
             startService(intent)
-            audioGuide.speak("activated")
         }
     }
 
@@ -158,30 +136,12 @@ class MainActivity : Activity() {
             txtShieldIcon.text = "🛡️"
             txtShieldStatus.text = "टैप करें"
             txtShieldSub.text = "सुरक्षा चालू करें"
-            txtStatusDesc.text = "📢 ऑडियो सहायता: बड़े शील्ड बटन को दबाकर सुरक्षा चालू करें।"
-        }
-    }
-
-    private fun setupLanguageButtons() {
-        val langMap = mapOf(
-            R.id.btnLangHi to "hi",
-            R.id.btnLangEn to "en",
-            R.id.btnLangBn to "bn",
-            R.id.btnLangTa to "ta",
-            R.id.btnLangTe to "te"
-        )
-
-        langMap.forEach { (btnId, code) ->
-            findViewById<Button>(btnId).setOnClickListener {
-                audioGuide.setLanguage(code)
-                audioGuide.speak("welcome")
-            }
+            txtStatusDesc.text = "बड़े शील्ड बटन को दबाकर सुरक्षा चालू करें।"
         }
     }
 
     override fun onDestroy() {
         unregisterReceiver(vpnStateReceiver)
-        audioGuide.shutdown()
         super.onDestroy()
     }
 }
