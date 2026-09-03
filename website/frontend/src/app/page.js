@@ -245,7 +245,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
                 GovShield <span className="accent-pill">Grid 3.0</span>
               </div>
               <div className="brand-subtitle-ux4g">
-                National Multi-Signal Phishing & Fake Portal Detection System
+                {t.brandSubtitle}
               </div>
             </div>
           </div>
@@ -502,8 +502,8 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
       {/* 5. Citizen 3-Card Grid */}
       <section className="ux4g-cards-section">
         <div className="cards-headline-block">
-          <h3 className="cards-headline-title">Citizen Cyber Defense Services</h3>
-          <p className="cards-headline-sub">Instant safeguards and real-time defense against deceptive portals</p>
+          <h3 className="cards-headline-title">{t.sectionTitle}</h3>
+          <p className="cards-headline-sub">{t.sectionSub}</p>
         </div>
 
         <div className="ux4g-cards-grid">
@@ -516,7 +516,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
               <h4 className="card-title-header">{t.card1Title}</h4>
               <p className="card-desc-paragraph">{t.card1Desc}</p>
               <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="card-cta-button">
-                Report Incident →
+                {t.card1Btn}
               </a>
             </div>
           </div>
@@ -590,10 +590,10 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
                   setTimeout(() => setCopied(false), 2000);
                 }}
               >
-                {copied ? "✅ Copied!" : "📋 Copy Dossier"}
+                {copied ? `✅ ${t.copied}` : `📋 ${t.copyDossier}`}
               </button>
               <button className="btn-secondary-ux4g" onClick={() => setDossierOpen(false)}>
-                Close
+                {t.closeModal}
               </button>
             </div>
           </div>
@@ -607,11 +607,11 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
             <div>
               <h4 className="footer-heading">GovShield Sentinel Grid (SIH1454)</h4>
               <p className="footer-text">
-                An AI/ML-driven sovereign cyber protection layer designed in alignment with the UX4G Design System 3.0 to protect 1.4 billion Indian citizens from deceptive phishing portals and typosquatting scams.
+                {t.footerAbout}
               </p>
             </div>
             <div>
-              <h4 className="footer-heading">National Portals</h4>
+              <h4 className="footer-heading">{t.nationalPortalsHeading}</h4>
               <ul className="footer-nav-list">
                 <li><a href="https://ux4g.gov.in" target="_blank" rel="noreferrer">UX4G Design System (ux4g.gov.in)</a></li>
                 <li><a href="https://india.gov.in" target="_blank" rel="noreferrer">National Portal of India (india.gov.in)</a></li>
@@ -619,7 +619,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
               </ul>
             </div>
             <div>
-              <h4 className="footer-heading">Emergency Helplines</h4>
+              <h4 className="footer-heading">{t.emergencyHelplinesHeading}</h4>
               <ul className="footer-nav-list">
                 <li><a href="tel:1930">1930 — National Cyber Crime Helpline</a></li>
                 <li><a href="tel:112">112 — National Emergency Service</a></li>
@@ -628,7 +628,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
             </div>
           </div>
           <div className="footer-credits-bar">
-            <p>Aligned with UX4G Design System 3.0 • Developed for Smart India Hackathon 2026</p>
+            <p>{t.footerSIH}</p>
           </div>
         </div>
       </footer>
