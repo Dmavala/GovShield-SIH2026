@@ -1,0 +1,218 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+export default function UX4GDrawer({ 
+  isOpen, 
+  onClose, 
+  t, 
+  onVoiceTrigger 
+}) {
+  // Accessibility state
+  const [colorMode, setColorMode] = useState('normal'); // 'normal', 'monochrome', 'highSaturate', 'lowSaturate', 'darkMode', 'invert'
+  const [biggerText, setBiggerText] = useState(false);
+  const [lineHeight, setLineHeight] = useState(false);
+  const [textSpacing, setTextSpacing] = useState(false);
+  const [highlightLinks, setHighlightLinks] = useState(false);
+  const [dyslexiaFont, setDyslexiaFont] = useState(false);
+  const [hideImages, setHideImages] = useState(false);
+  const [pauseAnim, setPauseAnim] = useState(false);
+
+  // Apply classes to document body
+  useEffect(() => {
+    const body = document.body;
+    
+    // Reset filters
+    body.classList.remove('ux4g-monochrome', 'ux4g-high-saturate', 'ux4g-low-saturate', 'ux4g-dark-mode', 'ux4g-invert');
+    if (colorMode === 'monochrome') body.classList.add('ux4g-monochrome');
+    if (colorMode === 'highSaturate') body.classList.add('ux4g-high-saturate');
+    if (colorMode === 'lowSaturate') body.classList.add('ux4g-low-saturate');
+    if (colorMode === 'darkMode') body.classList.add('ux4g-dark-mode');
+    if (colorMode === 'invert') body.classList.add('ux4g-invert');
+
+    // Content
+    if (biggerText) body.classList.add('ux4g-bigger-text'); else body.classList.remove('ux4g-bigger-text');
+    if (lineHeight) body.classList.add('ux4g-line-height'); else body.classList.remove('ux4g-line-height');
+    if (textSpacing) body.classList.add('ux4g-text-spacing'); else body.classList.remove('ux4g-text-spacing');
+    if (highlightLinks) body.classList.add('ux4g-highlight-links'); else body.classList.remove('ux4g-highlight-links');
+    if (dyslexiaFont) body.classList.add('ux4g-dyslexia'); else body.classList.remove('ux4g-dyslexia');
+    if (hideImages) body.classList.add('ux4g-hide-images'); else body.classList.remove('ux4g-hide-images');
+    if (pauseAnim) body.classList.add('ux4g-pause-anim'); else body.classList.remove('ux4g-pause-anim');
+  }, [colorMode, biggerText, lineHeight, textSpacing, highlightLinks, dyslexiaFont, hideImages, pauseAnim]);
+
+  const handleReset = () => {
+    setColorMode('normal');
+    setBiggerText(false);
+    setLineHeight(false);
+    setTextSpacing(false);
+    setHighlightLinks(false);
+    setDyslexiaFont(false);
+    setHideImages(false);
+    setPauseAnim(false);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="ux4g-drawer-backdrop" onClick={onClose}>
+      <div className="ux4g-drawer-panel" onClick={(e) => e.stopPropagation()}>
+        {/* Header Bar */}
+        <div className="ux4g-drawer-header">
+          <div className="ux4g-header-title">
+            <span>♿</span>
+            <span>{t.a11yTitle || "Accessibility Options by UX4G"}</span>
+          </div>
+          <button className="ux4g-close-btn" onClick={onClose} aria-label="Close Drawer">✕</button>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="ux4g-drawer-scroll">
+          
+          {/* Section 1: Color & Contrast Adjustment */}
+          <div className="ux4g-section-group">
+            <h4 className="ux4g-section-title">{t.colorAdjust || "Color & Contrast"}</h4>
+            <div className="ux4g-tiles-grid cols-3">
+              
+              <button 
+                className={`ux4g-tile-btn ${colorMode === 'monochrome' ? 'active' : ''}`}
+                onClick={() => setColorMode(colorMode === 'monochrome' ? 'normal' : 'monochrome')}
+              >
+                <span className="tile-icon">💧</span>
+                <span className="tile-label">{t.monochrome || "Monochrome"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${colorMode === 'highSaturate' ? 'active' : ''}`}
+                onClick={() => setColorMode(colorMode === 'highSaturate' ? 'normal' : 'highSaturate')}
+              >
+                <span className="tile-icon">🌓</span>
+                <span className="tile-label">{t.highSaturate || "High Saturate"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${colorMode === 'lowSaturate' ? 'active' : ''}`}
+                onClick={() => setColorMode(colorMode === 'lowSaturate' ? 'normal' : 'lowSaturate')}
+              >
+                <span className="tile-icon">💧</span>
+                <span className="tile-label">{t.lowSaturate || "Low Saturate"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${colorMode === 'darkMode' ? 'active' : ''}`}
+                onClick={() => setColorMode(colorMode === 'darkMode' ? 'normal' : 'darkMode')}
+              >
+                <span className="tile-icon">🌙</span>
+                <span className="tile-label">{t.darkMode || "Dark Mode"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${colorMode === 'invert' ? 'active' : ''}`}
+                onClick={() => setColorMode(colorMode === 'invert' ? 'normal' : 'invert')}
+              >
+                <span className="tile-icon">◩</span>
+                <span className="tile-label">{t.invertColors || "Invert Colors"}</span>
+              </button>
+
+            </div>
+          </div>
+
+          {/* Section 2: Content Adjustment */}
+          <div className="ux4g-section-group">
+            <h4 className="ux4g-section-title">{t.contentAdjust || "Content Adjustment"}</h4>
+            <div className="ux4g-tiles-grid cols-3">
+              
+              <button 
+                className={`ux4g-tile-btn ${biggerText ? 'active' : ''}`}
+                onClick={() => setBiggerText(!biggerText)}
+              >
+                <span className="tile-icon">A+</span>
+                <span className="tile-label">{t.biggerText || "Bigger Text"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${lineHeight ? 'active' : ''}`}
+                onClick={() => setLineHeight(!lineHeight)}
+              >
+                <span className="tile-icon">⇕</span>
+                <span className="tile-label">{t.lineHeight || "Line Height"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${textSpacing ? 'active' : ''}`}
+                onClick={() => setTextSpacing(!textSpacing)}
+              >
+                <span className="tile-icon">A↔A</span>
+                <span className="tile-label">{t.textSpacing || "Text Spacing"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${highlightLinks ? 'active' : ''}`}
+                onClick={() => setHighlightLinks(!highlightLinks)}
+              >
+                <span className="tile-icon">🔗</span>
+                <span className="tile-label">{t.highlightLinks || "Highlight Links"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${dyslexiaFont ? 'active' : ''}`}
+                onClick={() => setDyslexiaFont(!dyslexiaFont)}
+              >
+                <span className="tile-icon">Df</span>
+                <span className="tile-label">{t.dyslexiaFont || "Dyslexia Friendly"}</span>
+              </button>
+
+            </div>
+          </div>
+
+          {/* Section 3: Orientation & Assistive Tools */}
+          <div className="ux4g-section-group">
+            <h4 className="ux4g-section-title">{t.assistiveTools || "Orientation & Assistive Tools"}</h4>
+            <div className="ux4g-tiles-grid cols-3">
+              
+              <button 
+                className="ux4g-tile-btn"
+                onClick={() => {
+                  if (onVoiceTrigger) onVoiceTrigger();
+                  onClose();
+                }}
+              >
+                <span className="tile-icon">🗣️</span>
+                <span className="tile-label">{t.voiceSupport || "Voice Support"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${hideImages ? 'active' : ''}`}
+                onClick={() => setHideImages(!hideImages)}
+              >
+                <span className="tile-icon">🚫🖼️</span>
+                <span className="tile-label">{t.hideImages || "Hide Images"}</span>
+              </button>
+
+              <button 
+                className={`ux4g-tile-btn ${pauseAnim ? 'active' : ''}`}
+                onClick={() => setPauseAnim(!pauseAnim)}
+              >
+                <span className="tile-icon">⏸️</span>
+                <span className="tile-label">{t.pauseAnimation || "Pause Animation"}</span>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        {/* Footer Bar with Reset */}
+        <div className="ux4g-drawer-footer">
+          <button className="ux4g-reset-btn" onClick={handleReset}>
+            <span>🔄</span>
+            <span>{t.resetAll || "Reset"}</span>
+          </button>
+          <a href="https://ux4g.gov.in" target="_blank" rel="noreferrer" className="ux4g-help-link">
+            {t.needHelp || "Need Help?"}
+          </a>
+        </div>
+
+      </div>
+    </div>
+  );
+}

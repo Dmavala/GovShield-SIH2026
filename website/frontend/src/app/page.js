@@ -1,179 +1,31 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { scanWebsiteClientSide } from './lib/scannerEngine';
 import { playAcousticAlert, selectBestVoice } from './lib/audioSynthesizer';
+import { UX4G_STRINGS } from './lib/ux4gLanguages';
+import UX4GDrawer from './components/UX4GDrawer';
+import LanguageDropdown from './components/LanguageDropdown';
 
-// National Ashoka Emblem SVG Component
+// Sovereign Emblem Component
 const AshokaEmblem = () => (
-  <svg className="national-emblem-svg" viewBox="0 0 100 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Emblem of India">
-    <path d="M50 10 C35 10 25 25 25 45 C25 65 38 85 50 95 C62 85 75 65 75 45 C75 25 65 10 50 10 Z" fill="#0b2545" opacity="0.9" />
+  <svg className="emblem-icon-ux4g" viewBox="0 0 100 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="National Emblem of India">
+    <path d="M50 10 C35 10 25 25 25 45 C25 65 38 85 50 95 C62 85 75 65 75 45 C75 25 65 10 50 10 Z" fill="#5c3cf6" opacity="0.9" />
     <circle cx="50" cy="40" r="14" fill="#ffffff" />
-    <circle cx="50" cy="40" r="11" fill="#0b2545" />
+    <circle cx="50" cy="40" r="11" fill="#5c3cf6" />
     <circle cx="50" cy="40" r="3" fill="#ffffff" />
     <line x1="50" y1="29" x2="50" y2="51" stroke="#ffffff" strokeWidth="1" />
     <line x1="39" y1="40" x2="61" y2="40" stroke="#ffffff" strokeWidth="1" />
     <line x1="42" y1="32" x2="58" y2="48" stroke="#ffffff" strokeWidth="1" />
     <line x1="42" y1="48" x2="58" y2="32" stroke="#ffffff" strokeWidth="1" />
-    <rect x="30" y="95" width="40" height="10" rx="3" fill="#e35d16" />
-    <text x="50" y="118" textAnchor="middle" fill="#0b2545" fontSize="10" fontWeight="900" fontFamily="serif">सत्यमेव जयते</text>
+    <rect x="30" y="95" width="40" height="10" rx="3" fill="#ff6b35" />
+    <text x="50" y="118" textAnchor="middle" fill="#0f172a" fontSize="10" fontWeight="900" fontFamily="serif">सत्यमेव जयते</text>
   </svg>
 );
 
-// Multilingual Dictionary for Universal Accessibility
-const translations = {
-  hi: {
-    govIndia: "भारत सरकार | GOVERNMENT OF INDIA",
-    ministry: "गृह मंत्रालय एवं इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय",
-    portalName: "GovShield Sentinel Grid",
-    portalSub: "राष्ट्रीय साइबर सुरक्षा एवं फर्जी सरकारी वेबसाइट पहचान प्रणाली",
-    helplineTitle: "राष्ट्रीय साइबर हेल्पलाइन",
-    helplineSub: "वित्तीय धोखाधड़ी की तुरंत रिपोर्ट करें",
-    fontSize: "अक्षर आकार",
-    highContrast: "उच्च कंट्रास्ट",
-    langName: "English",
-    heroBadge: "🛡️ स्मार्ट इंडिया हैकाथॉन (SIH 2026) • समस्या विवरण: SIH1454",
-    heroTitle: "फर्जी सरकारी वेबसाइटों और साइबर ठगी से बचें",
-    heroSub: "किसी भी संदिग्ध वेबसाइट, लिंक या मैसेज का सत्यापन करें। हमारा AI इंजन तुरंत बताएगा कि वेबसाइट असली है या फर्जी!",
-    searchPlaceholder: "वेबसाइट का लिंक यहाँ पेस्ट करें (उदा: pmkisan.gov.in या g0v.in)...",
-    verifyBtn: "सत्यापन करें",
-    verifyingBtn: "जांच जारी है...",
-    quickTry: "परीक्षण हेतु लिंक चुनें:",
-    safeSite: "सुरक्षित (PM-Kisan)",
-    fakeSite: "फर्जी डोमेन (g0v.in)",
-    incomeTax: "आयकर पोर्टल (Authentic)",
-    
-    // Verdict
-    verdictSafe: "सुरक्षित एवं प्रामाणिक",
-    verdictThreat: "सावधान! फर्जी / नकली वेबसाइट",
-    verdictCaution: "सतर्कता: संदिग्ध वेबसाइट",
-    listenAudio: "आवाज़ में सुनें",
-    stopAudio: "आवाज़ बंद करें",
-    riskScoreLabel: "जोखिम स्कोर (Threat Score)",
-    officialRegistry: "आधिकारिक सरकारी रजिस्ट्री",
-    tldChecked: "सत्यापित .gov.in / .nic.in डोमेन",
-    voiceSpeakingBanner: "🎙️ एआई साइबर वाणी सहायक बोल रहा है...",
-    
-    advisoryTitle: "नागरिक सुरक्षा सलाह (Advisory):",
-    advisorySafe: "यह वेबसाइट पूरी तरह से प्रामाणिक और आधिकारिक सरकारी पोर्टल है। आप इस पर विश्वास के साथ कार्य कर सकते हैं।",
-    advisoryThreat: "चेतावनी! यह वेबसाइट फर्जी है जो सरकारी पोर्टल की नकल कर रही है। अपना आधार नंबर, बैंक खाता, पैन या OTP यहाँ कभी दर्ज न करें!",
-    advisoryCaution: "सावधानी बरतें। यह वेबसाइट आधिकारिक सरकारी रजिस्ट्री में दर्ज नहीं है। व्यक्तिगत विवरण दर्ज करने से पहले जांच करें।",
-    
-    // Forensic Layers
-    layer1Title: "1. सरकारी डोमेन प्रमाणन (.gov.in / .nic.in)",
-    layer2Title: "2. वर्तनी एवं नाम की नकल (Typosquatting)",
-    layer3Title: "3. आधार व पासवर्ड चोरी फॉर्म (Credential Theft)",
-    layer4Title: "4. एआई विजुअल क्लोनिंग (Lookalike Match)",
-    layer5Title: "5. वेबसाइट की उम्र व पंजीकरण (Domain Age)",
-    
-    // Cards
-    sectionTitle: "नागरिक साइबर सुरक्षा सेवाएं",
-    sectionSub: "किसी भी ऑनलाइन धोखे या संदिग्ध लिंक के खिलाफ तत्काल सुरक्षा प्राप्त करें",
-    card1Title: "महिला एवं बाल सुरक्षा",
-    card1Desc: "ऑनलाइन उत्पीड़न, अवांछित संदेशों और साइबर अपराधों की गोपनीय रिपोर्ट दर्ज करें।",
-    card1Btn: "सुरक्षित रिपोर्ट करें",
-    card2Title: "वित्तीय धोखाधड़ी रोकथाम",
-    card2Desc: "नकली बैंक KYC, फर्जी सब्सिडी, लॉटरी व आधार OTP फ्रॉड से तुरंत सुरक्षा व सहायता।",
-    card2Btn: "1930 पर कॉल करें",
-    card3Title: "संदिग्ध वेबसाइट की शिकायत",
-    card3Desc: "CERT-In और भारतीय साइबर अपराध समन्वय केंद्र (I4C) को कानूनी कार्रवाई हेतु डोजियर भेजें।",
-    card3Btn: "डोजियर डाउनलोड करें",
-
-    // Resources
-    res1: "नागरिक सुरक्षा नियम",
-    res1Sub: "सरकारी पोर्टल पहचानने की विधि",
-    res2: "1930 साइबर हेल्पलाइन",
-    res2Sub: "24x7 राष्ट्रीय सहायता सेवा",
-    res3: "CERT-In सुरक्षा बुलेटिन",
-    res3Sub: "नवीनतम साइबर एडवाइजरी",
-    res4: "फर्जी एसएमएस अलर्ट",
-    res4Sub: "फिशिंग लिंक से बचने के उपाय",
-    
-    dossierTitle: "CERT-In कानूनी साक्ष्य डोजियर (Incident Report)",
-    copyDossier: "डोजियर कॉपी करें",
-    copied: "कॉपी हो गया!",
-    close: "बंद करें",
-    footerText: "राष्ट्रीय साइबर रक्षा प्रणाली • स्मार्ट इंडिया हैकाथॉन (SIH 2026) के अंतर्गत विकसित"
-  },
-  en: {
-    govIndia: "GOVERNMENT OF INDIA | भारत सरकार",
-    ministry: "Ministry of Home Affairs & Ministry of Electronics and IT",
-    portalName: "GovShield Sentinel Grid",
-    portalSub: "National Multi-Signal AI Phishing & Fake Portal Detection System",
-    helplineTitle: "National Cyber Helpline",
-    helplineSub: "Report Financial Cyber Fraud 24x7",
-    fontSize: "Font Size",
-    highContrast: "High Contrast",
-    langName: "हिंदी",
-    heroBadge: "🛡️ Smart India Hackathon (SIH 2026) • Problem Statement: SIH1454",
-    heroTitle: "Protect Yourself from Fake Government Websites & Cyber Fraud",
-    heroSub: "Verify any suspicious website link, SMS, or portal instantly with our Multi-Signal AI Defense Engine!",
-    searchPlaceholder: "Paste portal website URL here (e.g., pmkisan.gov.in or g0v.in)...",
-    verifyBtn: "Verify Portal",
-    verifyingBtn: "Analyzing...",
-    quickTry: "Quick Test Examples:",
-    safeSite: "Safe Portal (PM-Kisan)",
-    fakeSite: "Fake Typosquat (g0v.in)",
-    incomeTax: "IncomeTax (Authentic)",
-
-    // Verdict
-    verdictSafe: "VERIFIED AUTHENTIC PORTAL",
-    verdictThreat: "CRITICAL THREAT: FAKE CLONE",
-    verdictCaution: "CAUTION: SUSPICIOUS DOMAIN",
-    listenAudio: "Listen Audio",
-    stopAudio: "Stop Audio",
-    riskScoreLabel: "Threat Risk Score",
-    officialRegistry: "Official Government Registry",
-    tldChecked: "Authenticated .gov.in / .nic.in domain",
-    voiceSpeakingBanner: "🎙️ AI Cyber Voice Assistant Speaking...",
-
-    advisoryTitle: "Citizen Security Advisory:",
-    advisorySafe: "This website is verified as an authentic Government of India portal. It is safe to use.",
-    advisoryThreat: "DANGER! This website is a deceptive clone imitating government services. NEVER enter your Aadhaar, Bank Details, PAN, or OTP here!",
-    advisoryCaution: "Exercise caution. This domain is not an official government portal. Verify authenticity before entering personal details.",
-
-    // Forensic Layers
-    layer1Title: "1. Sovereign TLD Authentication (.gov.in / .nic.in)",
-    layer2Title: "2. Typosquatting & Spelling Traps Check",
-    layer3Title: "3. Identity & Credential Theft Forms",
-    layer4Title: "4. AI Visual Lookalike Detection",
-    layer5Title: "5. Domain Age & Registry Verification",
-
-    // Cards
-    sectionTitle: "Citizen Cyber Defense Services",
-    sectionSub: "Instant safeguards and real-time defense against deceptive portals",
-    card1Title: "Women & Child Cyber Safety",
-    card1Desc: "Confidential reporting for cyber harassment, impersonation, and fraudulent schemes.",
-    card1Btn: "Report Incident",
-    card2Title: "Financial Cyber Fraud Defense",
-    card2Desc: "Instant protection against fake KYC, stolen Aadhaar subsidy claims, and OTP traps.",
-    card2Btn: "Call Helpline 1930",
-    card3Title: "CERT-In Incident Reporting",
-    card3Desc: "Generate legal evidence dossiers for immediate takedown by NIXI, CERT-In, and I4C.",
-    card3Btn: "Download Dossier",
-
-    // Resources
-    res1: "Citizen Safety Guidelines",
-    res1Sub: "How to identify authentic links",
-    res2: "1930 Cyber Helpline",
-    res2Sub: "24x7 National Emergency Support",
-    res3: "CERT-In Threat Bulletins",
-    res3Sub: "Latest zero-day fraud advisories",
-    res4: "Fake SMS & Scheme Alerts",
-    res4Sub: "Guard against deceptive subsidy links",
-
-    dossierTitle: "CERT-In Cyber Security Incident Dossier",
-    copyDossier: "Copy Dossier to Clipboard",
-    copied: "Copied!",
-    close: "Close",
-    footerText: "National Cyber Defense Initiative • Developed for Smart India Hackathon 2026 (SIH1454)"
-  }
-};
-
-export default function HomePage() {
+export default function UX4GHomePage() {
   const [lang, setLang] = useState('hi');
-  const [fontScale, setFontScale] = useState(1);
-  const [highContrast, setHighContrast] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -183,28 +35,22 @@ export default function HomePage() {
   const [dossierOpen, setDossierOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const t = translations[lang];
+  // Active translation dictionary fallback
+  const t = UX4G_STRINGS[lang] || UX4G_STRINGS['hi'];
 
+  // Global Ctrl+F2 keyboard listener for UX4G Accessibility Drawer
   useEffect(() => {
-    document.documentElement.style.setProperty('--font-scale', fontScale);
-    if (highContrast) {
-      document.body.classList.add('high-contrast');
-    } else {
-      document.body.classList.remove('high-contrast');
-    }
-  }, [fontScale, highContrast]);
-
-  // Preload speech synthesis voices on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
-    }
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'F2') {
+        e.preventDefault();
+        setDrawerOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Enhanced Natural Human-Like Speech Engine
+  // Natural Speech Synthesis Narration
   const handleSpeakVerdict = () => {
     if (!('speechSynthesis' in window)) {
       alert("Text-to-speech is not supported on this browser.");
@@ -219,7 +65,7 @@ export default function HomePage() {
 
     if (!result) return;
 
-    // 1. Play instant acoustic chime for instant comprehension
+    // 1. Play instant acoustic chime
     if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
       playAcousticAlert('threat');
     } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
@@ -228,53 +74,49 @@ export default function HomePage() {
       playAcousticAlert('caution');
     }
 
-    // 2. Build expressive, natural pacing script
+    // 2. Build natural script
     let textToSpeak = "";
     if (lang === 'hi') {
       if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
-        textToSpeak = `सावधान! ... यह वेबसाइट पूरी तरह फर्जी है, और सरकारी पोर्टल की नकल कर रही है। ... कृपया अपना आधार नंबर, बैंक विवरण या ओटीपी कभी भी साझा न करें। ... वित्तीय नुकसान से बचने के लिए तुरंत 1930 राष्ट्रीय साइबर हेल्पलाइन पर कॉल करें।`;
+        textToSpeak = `सावधान! ... यह वेबसाइट पूरी तरह फर्जी है, और सरकारी पोर्टल की नकल कर रही है। ... कृपया अपना आधार नंबर, बैंक विवरण या ओटीपी कभी भी साझा न करें। ... तुरंत 1930 साइबर हेल्पलाइन पर कॉल करें।`;
       } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
-        textToSpeak = `सत्यापित! ... यह भारत सरकार का प्रामाणिक और सुरक्षित आधिकारिक पोर्टल है। ... आप इस पर विश्वास के साथ सुरक्षित रूप से अपना कार्य कर सकते हैं।`;
+        textToSpeak = `सत्यापित! ... यह भारत सरकार का प्रामाणिक और सुरक्षित आधिकारिक पोर्टल है। ... आप इस पर विश्वास के साथ कार्य कर सकते हैं।`;
       } else {
-        textToSpeak = `सतर्क रहें! ... यह वेबसाइट संदिग्ध है, और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है। ... कोई भी गोपनीय जानकारी दर्ज करने से पहले पूरी जांच अवश्य करें।`;
+        textToSpeak = `सतर्क रहें! ... यह वेबसाइट संदिग्ध है, और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है।`;
       }
     } else {
       if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
-        textToSpeak = `Critical Warning! ... This website is a fraudulent lookalike clone mimicking government services. ... Never enter your Aadhaar, bank credentials, or OTP here. ... Call National Cyber Helpline 1930 immediately!`;
+        textToSpeak = `Critical Warning! ... This website is a deceptive clone imitating government services. ... Never enter your Aadhaar, bank details, or OTP here. ... Call Helpline 1930 immediately!`;
       } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
-        textToSpeak = `Verified Authentic! ... This website belongs to official Government of India sovereign infrastructure. ... It is safe for all citizen transactions.`;
+        textToSpeak = `Verified Authentic! ... This domain is an authenticated Government of India sovereign portal.`;
       } else {
-        textToSpeak = `Caution! ... This website contains suspicious indicators and is unverified on the official government registry.`;
+        textToSpeak = `Caution! ... This domain is unverified on the official government registry.`;
       }
     }
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-    utterance.rate = 0.88; // Slower, clearer cadence for maximum comprehension
-    utterance.pitch = 1.04; // Natural, pleasant pitch
+    utterance.rate = 0.88;
+    utterance.pitch = 1.04;
 
-    // Dynamically assign highest fidelity natural voice
     const bestVoice = selectBestVoice(lang);
-    if (bestVoice) {
-      utterance.voice = bestVoice;
-    }
+    if (bestVoice) utterance.voice = bestVoice;
 
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
 
     setIsSpeaking(true);
     window.speechSynthesis.cancel();
-    // 150ms delay to let acoustic chime ring first
     setTimeout(() => {
       window.speechSynthesis.speak(utterance);
     }, 150);
   };
 
-  // Speech Recognition (Mic Voice Input)
+  // Mic Speech Input
   const handleVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Voice input is not supported in this browser. Please type the link manually.");
+      alert("Voice input is not supported in this browser. Please enter URL manually.");
       return;
     }
 
@@ -303,10 +145,10 @@ export default function HomePage() {
     }
   };
 
-  // Standalone Instant Client-Side Scan
+  // Execute Standalone Client-Side Inspection
   const handleScan = (overrideUrl) => {
-    const targetUrl = overrideUrl || url;
-    if (!targetUrl || !targetUrl.trim()) return;
+    const target = overrideUrl || url;
+    if (!target || !target.trim()) return;
 
     setLoading(true);
     setResult(null);
@@ -315,10 +157,10 @@ export default function HomePage() {
 
     setTimeout(() => {
       try {
-        const scanOutput = scanWebsiteClientSide(targetUrl);
-        setResult(scanOutput);
-      } catch (err) {
-        console.error(err);
+        const output = scanWebsiteClientSide(target);
+        setResult(output);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
@@ -326,14 +168,14 @@ export default function HomePage() {
   };
 
   const getVerdictStatus = (res) => {
-    if (!res) return { type: 'safe', title: t.verdictSafe, icon: '🛡️', color: 'var(--gov-green)' };
+    if (!res) return { type: 'safe', title: t.verdictSafe, icon: '🛡️' };
     if (res.risk_score >= 66 || res.verdict === 'PHISHING_CLONE') {
-      return { type: 'threat', title: t.verdictThreat, icon: '🚨', color: 'var(--gov-red)' };
+      return { type: 'threat', title: t.verdictThreat, icon: '🚨' };
     }
     if (res.risk_score >= 26 || res.verdict === 'SUSPICIOUS') {
-      return { type: 'caution', title: t.verdictCaution, icon: '⚠️', color: 'var(--gov-amber)' };
+      return { type: 'caution', title: t.verdictCaution, icon: '⚠️' };
     }
-    return { type: 'safe', title: t.verdictSafe, icon: '✅', color: 'var(--gov-green)' };
+    return { type: 'safe', title: t.verdictSafe, icon: '✅' };
   };
 
   const currentStatus = getVerdictStatus(result);
@@ -371,346 +213,290 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
 
   return (
     <>
-      <a href="#mainSearch" className="skip-link">Skip to main content / मुख्य सामग्री पर जाएं</a>
+      <a href="#mainSearch" className="skip-link">{t.skipContent}</a>
 
-      {/* Tricolor National Accent Banner */}
-      <div className="tricolor-stripe" />
+      {/* 1. UX4G Sovereign Top Utility Bar */}
+      <div className="ux4g-top-bar" role="banner">
+        <div className="ux4g-top-container">
+          <a href="https://india.gov.in" target="_blank" rel="noreferrer" className="ux4g-gov-link">
+            <span>🇮🇳</span>
+            <span>{t.govIndia} ↗</span>
+          </a>
 
-      {/* Accessibility (A11y) & Language Top Bar (like india.gov.in) */}
-      <header className="a11y-top-bar" role="banner">
-        <div className="a11y-container">
-          <div className="gov-identification">
-            <span className="gov-flag-icon">🇮🇳</span>
-            <span>{t.govIndia}</span>
+          <div className="ux4g-top-controls">
+            <a href="#mainSearch" style={{ color: '#94a3b8', textDecoration: 'none' }}>
+              {t.skipContent}
+            </a>
+
+            {/* Accessibility Drawer Trigger */}
+            <button 
+              className="ux4g-top-action-btn"
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Open Accessibility Options"
+            >
+              <span>♿</span>
+              <span>Accessibility</span>
+            </button>
+
+            {/* 12 Indic Languages Dropdown */}
+            <LanguageDropdown currentLang={lang} onSelectLang={setLang} />
+          </div>
+        </div>
+      </div>
+
+      {/* 2. UX4G Main Navigation Header */}
+      <header className="ux4g-nav-header">
+        <div className="ux4g-nav-container">
+          <div className="ux4g-brand-group">
+            <AshokaEmblem />
+            <div>
+              <div className="brand-title-ux4g">
+                GovShield <span className="accent-pill">Grid 3.0</span>
+              </div>
+              <div className="brand-subtitle-ux4g">
+                National Multi-Signal Phishing & Fake Portal Detection System
+              </div>
+            </div>
           </div>
 
-          <div className="a11y-controls-group">
-            {/* Font Sizing */}
-            <span style={{ fontSize: '0.78rem', opacity: 0.85 }}>{t.fontSize}:</span>
-            <button 
-              className={`a11y-btn ${fontScale === 0.9 ? 'active' : ''}`}
-              onClick={() => setFontScale(0.9)} 
-              title="Decrease Font Size"
-              aria-label="Decrease Font Size"
-            >
-              A-
-            </button>
-            <button 
-              className={`a11y-btn ${fontScale === 1.0 ? 'active' : ''}`}
-              onClick={() => setFontScale(1.0)} 
-              title="Standard Font Size"
-              aria-label="Standard Font Size"
-            >
-              A
-            </button>
-            <button 
-              className={`a11y-btn ${fontScale === 1.2 ? 'active' : ''}`}
-              onClick={() => setFontScale(1.2)} 
-              title="Increase Font Size"
-              aria-label="Increase Font Size"
-            >
-              A+
-            </button>
-
-            {/* High Contrast Toggle */}
-            <button 
-              className={`a11y-btn ${highContrast ? 'active' : ''}`}
-              onClick={() => setHighContrast(!highContrast)}
-              title={t.highContrast}
-              aria-label={t.highContrast}
-            >
-              👁️ {t.highContrast}
-            </button>
-
-            {/* Language Switcher */}
-            <button 
-              className="a11y-btn lang-toggle-btn"
-              onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}
-              title="Switch Language"
-              aria-label="Switch Language"
-            >
-              🌐 {t.langName}
+          <div className="nav-cta-group">
+            <a href="tel:1930" className="btn-secondary-ux4g" style={{ color: 'var(--gov-red)' }}>
+              📞 1930 Helpline
+            </a>
+            <button className="btn-primary-ux4g" onClick={() => setDrawerOpen(true)}>
+              ♿ Options (Ctrl+F2)
             </button>
           </div>
         </div>
       </header>
 
-      {/* Official Government Brand Bar */}
-      <div className="official-header">
-        <div className="header-inner">
-          <div className="emblem-brand-wrapper">
-            <AshokaEmblem />
-            <div className="brand-titles">
-              <span className="sub-ministry">{t.ministry}</span>
-              <h1 className="main-portal-title">{t.portalName}</h1>
-              <span className="portal-subtitle">{t.portalSub}</span>
-            </div>
+      {/* 3. UX4G Hero Section (Inspired by ux4g.gov.in) */}
+      <section className="ux4g-hero-section" id="mainSearch">
+        <div className="ux4g-hero-container">
+          
+          <div className="ux4g-version-pill">
+            <span>✨</span>
+            <span>{t.heroPill}</span>
           </div>
 
-          {/* Emergency 1930 Cyber Helpline Box */}
-          <a href="tel:1930" className="emergency-helpline-box" aria-label="Call Cyber Crime Helpline 1930">
-            <span className="helpline-icon-pulse">📞</span>
-            <div>
-              <div className="helpline-label">{t.helplineTitle}</div>
-              <div className="helpline-number">1930 (Toll Free)</div>
-            </div>
-          </a>
-        </div>
-      </div>
+          <h2 className="ux4g-hero-heading">
+            {t.heroTitlePrefix} <br />
+            <span className="ux4g-gradient-ai">{t.heroTitleAi}</span>
+          </h2>
 
-      {/* Hero & Search Engine Section */}
-      <section className="hero-section" id="mainSearch">
-        <div className="hero-container">
-          <div className="hero-pill-badge">{t.heroBadge}</div>
-          <h2 className="hero-headline">{t.heroTitle}</h2>
-          <p className="hero-subheadline">{t.heroSub}</p>
+          <p className="ux4g-hero-subtext">
+            {t.heroSub}
+          </p>
 
-          {/* Search Bar with Mic & Verify button */}
-          <div className="search-card-wrapper">
+          {/* Search Scanner Input */}
+          <div className="ux4g-search-card">
             <input 
               type="text" 
-              className="search-input-field"
-              placeholder={t.searchPlaceholder}
+              className="ux4g-search-input"
+              placeholder={t.placeholder}
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleScan()}
               aria-label="Enter website URL to verify"
             />
 
-            {/* Speech to text Mic button */}
             <button 
               type="button"
-              className={`mic-voice-btn ${isListening ? 'listening' : ''}`}
+              className={`mic-btn-ux4g ${isListening ? 'listening' : ''}`}
               onClick={handleVoiceInput}
-              title={isListening ? "Listening..." : "Speak URL / बोलकर लिंक दर्ज करें"}
-              aria-label="Voice input button"
+              title="Speak URL / बोलकर लिंक दर्ज करें"
+              aria-label="Voice input"
             >
               🎤
             </button>
 
-            {/* Verify Button */}
             <button 
               type="button"
-              className="btn-verify-main"
+              className="verify-action-btn"
               onClick={() => handleScan()}
               disabled={loading}
               aria-label="Verify Portal"
             >
-              {loading ? (
-                <>⏳ {t.verifyingBtn}</>
-              ) : (
-                <>🛡️ {t.verifyBtn}</>
-              )}
+              {loading ? `⏳ ${t.verifying}` : `🛡️ ${t.verifyBtn}`}
             </button>
           </div>
 
           {/* Quick Demo Chips */}
-          <div className="quick-samples-row">
-            <span className="quick-samples-label">{t.quickTry}</span>
+          <div className="ux4g-chips-row">
+            <span className="chips-tag-label">{t.quickTry}</span>
             <button 
               type="button" 
-              className="sample-chip" 
+              className="ux4g-sample-chip"
               onClick={() => { setUrl('https://pmkisan.gov.in'); handleScan('https://pmkisan.gov.in'); }}
             >
               ✅ {t.safeSite}
             </button>
             <button 
               type="button" 
-              className="sample-chip danger-chip" 
+              className="ux4g-sample-chip danger-chip"
               onClick={() => { setUrl('https://g0v.in'); handleScan('https://g0v.in'); }}
             >
               🚨 {t.fakeSite}
             </button>
             <button 
               type="button" 
-              className="sample-chip" 
+              className="ux4g-sample-chip"
               onClick={() => { setUrl('https://incometax.gov.in'); handleScan('https://incometax.gov.in'); }}
             >
               🏛️ {t.incomeTax}
             </button>
           </div>
+
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <main className="main-content-layout">
-        
-        {/* Visual Verdict Master Card (When Scan Result Exists) */}
-        {result && (
-          <div className="verdict-master-card" role="region" aria-live="polite">
+      {/* 4. Active Scan Verdict Section */}
+      {result && (
+        <section className="ux4g-verdict-section" role="region" aria-live="polite">
+          <div className="verdict-master-box">
             
-            {/* Animated Soundwave Bar while Speaking */}
-            {isSpeaking && (
-              <div className="voice-assistant-active-bar">
-                <div className="voice-status-group">
-                  <div className="voice-soundwave-animation">
-                    <span className="wave-bar" />
-                    <span className="wave-bar" />
-                    <span className="wave-bar" />
-                    <span className="wave-bar" />
-                    <span className="wave-bar" />
-                  </div>
-                  <span className="voice-assistant-label">{t.voiceSpeakingBanner}</span>
-                </div>
-                <button type="button" className="voice-stop-chip" onClick={handleSpeakVerdict}>
-                  ✕ {t.stopAudio}
-                </button>
-              </div>
-            )}
-
-            {/* Top Verdict Banner */}
-            <div className={`verdict-banner-header ${currentStatus.type}`}>
-              <div className="verdict-lead-group">
-                <span className="verdict-huge-icon">{currentStatus.icon}</span>
+            {/* Header Banner */}
+            <div className={`verdict-header-banner ${currentStatus.type}`}>
+              <div className="verdict-main-meta">
+                <span className="verdict-icon-badge">{currentStatus.icon}</span>
                 <div>
-                  <h3 className="verdict-title-text">{currentStatus.title}</h3>
+                  <h3 className="verdict-status-title">{currentStatus.title}</h3>
                   <p className="verdict-status-sub">
-                    {result.target_entity || 'Government Public Service'} • {result.is_genuine_gov_tld ? t.tldChecked : 'Non-Government Domain'}
+                    {result.target_entity || 'Government Service'} • {result.is_genuine_gov_tld ? 'Sovereign .gov.in Domain' : 'Unauthorized Public TLD'}
                   </p>
                 </div>
               </div>
 
-              {/* Audio Listen Button for Illiterate / Non-Tech-Savvy Citizens */}
-              <div className="verdict-actions-top">
-                <button 
-                  type="button" 
-                  className={`btn-voice-audio ${isSpeaking ? 'playing' : ''}`}
-                  onClick={handleSpeakVerdict}
-                  aria-label="Listen to verdict audio in natural voice"
-                >
-                  {isSpeaking ? '🔊 ' + t.stopAudio : '🔊 ' + t.listenAudio}
-                </button>
-              </div>
+              {/* Natural Speech Button */}
+              <button 
+                type="button"
+                className={`btn-speech-trigger ${isSpeaking ? 'playing' : ''}`}
+                onClick={handleSpeakVerdict}
+              >
+                {isSpeaking ? `🔊 ${t.stopAudio}` : `🔊 ${t.listenAudio}`}
+              </button>
             </div>
 
-            {/* Verdict Body Grid */}
-            <div className="verdict-body-grid">
+            {/* Body Grid */}
+            <div className="verdict-layout-grid">
               
-              {/* Left Score Gauge */}
-              <div className="score-gauge-box">
-                <span className="gauge-metric-title">{t.riskScoreLabel}</span>
-                <div className={`score-number-display ${currentStatus.type}`}>
+              {/* Left Score Panel */}
+              <div className="gauge-score-panel">
+                <span className="gauge-header-title">{t.threatScoreLabel}</span>
+                <div className={`gauge-big-number ${currentStatus.type}`}>
                   {result.risk_score < 10 ? `0${result.risk_score}` : result.risk_score}
                 </div>
-                <span className="score-scale-text">/ 100</span>
-                <div className="scanned-url-badge">{result.url || url}</div>
+                <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 700 }}>/ 100</span>
+                <div className="scanned-url-chip">{result.url || url}</div>
               </div>
 
-              {/* Right Advisory & 5-Layer Forensic Evidence */}
+              {/* Right Advisory & 5-Layer Forensics */}
               <div>
-                
-                {/* Plain-Language Citizen Advisory */}
-                <div className="citizen-advisory-block">
-                  <div className="advisory-title">
+                <div className="citizen-advisory-pill-box">
+                  <div className="advisory-header">
                     <span>⚠️</span>
-                    <span>{t.advisoryTitle}</span>
+                    <span>Advisory:</span>
                   </div>
-                  <p className="advisory-desc">
+                  <p className="advisory-body-text">
                     {result.risk_score >= 66 ? t.advisoryThreat : (result.risk_score <= 25 ? t.advisorySafe : t.advisoryCaution)}
                   </p>
                 </div>
 
-                {/* 5-Layer Forensic Evidence Checklist */}
-                <div className="forensics-checklist">
+                <div className="forensics-stack">
                   {/* Layer 1 */}
-                  <div className="forensic-step-card">
-                    <span className="step-status-icon">{result.is_genuine_gov_tld ? '🟢' : '🔴'}</span>
-                    <div className="step-content-meta">
-                      <div className="step-title-row">
-                        <span className="step-layer-name">{t.layer1Title}</span>
-                        <span className={`step-status-pill ${result.is_genuine_gov_tld ? 'pass' : 'fail'}`}>
+                  <div className="forensic-tile-item">
+                    <span className="tile-status-icon">{result.is_genuine_gov_tld ? '🟢' : '🔴'}</span>
+                    <div className="tile-content-wrapper">
+                      <div className="tile-header-line">
+                        <span className="tile-title">{t.layer1}</span>
+                        <span className={`tile-status-tag ${result.is_genuine_gov_tld ? 'pass' : 'fail'}`}>
                           {result.is_genuine_gov_tld ? 'VERIFIED' : 'UNVERIFIED'}
                         </span>
                       </div>
-                      <p className="step-layer-desc">
-                        {result.is_genuine_gov_tld ? 'Authentic National Informatics Centre (NIC) verified sovereign TLD.' : 'Site does NOT belong to official .gov.in or .nic.in registry.'}
+                      <p className="tile-desc">
+                        {result.is_genuine_gov_tld ? 'Authenticated NIC India sovereign registry.' : 'Domain does not belong to authorized .gov.in / .nic.in registry.'}
                       </p>
                     </div>
                   </div>
 
                   {/* Layer 2 */}
-                  <div className="forensic-step-card">
-                    <span className="step-status-icon">{result.signal_breakdown?.lexical_score > 30 ? '🔴' : '🟢'}</span>
-                    <div className="step-content-meta">
-                      <div className="step-title-row">
-                        <span className="step-layer-name">{t.layer2Title}</span>
-                        <span className={`step-status-pill ${result.signal_breakdown?.lexical_score > 30 ? 'fail' : 'pass'}`}>
+                  <div className="forensic-tile-item">
+                    <span className="tile-status-icon">{result.signal_breakdown?.lexical_score > 30 ? '🔴' : '🟢'}</span>
+                    <div className="tile-content-wrapper">
+                      <div className="tile-header-line">
+                        <span className="tile-title">{t.layer2}</span>
+                        <span className={`tile-status-tag ${result.signal_breakdown?.lexical_score > 30 ? 'fail' : 'pass'}`}>
                           {result.signal_breakdown?.lexical_score > 30 ? 'SPOOF DETECTED' : 'CLEAN'}
                         </span>
                       </div>
-                      <p className="step-layer-desc">
+                      <p className="tile-desc">
                         {result.signal_breakdown?.lexical_score > 30 
-                          ? 'Critical: Deceptive spelling tricks (e.g., replacing letter "o" with "0" as in g0v.in).' 
-                          : 'No typosquatting, zero-width homoglyphs, or deceptive brand injections.'}
+                          ? 'Critical: Deceptive spelling tricks (e.g. replacing letter "o" with "0" as in g0v.in).' 
+                          : 'No typosquatting, zero-width homoglyphs, or lookalike patterns.'}
                       </p>
                     </div>
                   </div>
 
                   {/* Layer 3 */}
-                  <div className="forensic-step-card">
-                    <span className="step-status-icon">{result.signal_breakdown?.sensitive_fields_found?.length > 0 ? '🔴' : '🟢'}</span>
-                    <div className="step-content-meta">
-                      <div className="step-title-row">
-                        <span className="step-layer-name">{t.layer3Title}</span>
-                        <span className={`step-status-pill ${result.signal_breakdown?.sensitive_fields_found?.length > 0 ? 'fail' : 'pass'}`}>
+                  <div className="forensic-tile-item">
+                    <span className="tile-status-icon">{result.signal_breakdown?.sensitive_fields_found?.length > 0 ? '🔴' : '🟢'}</span>
+                    <div className="tile-content-wrapper">
+                      <div className="tile-header-line">
+                        <span className="tile-title">{t.layer3}</span>
+                        <span className={`tile-status-tag ${result.signal_breakdown?.sensitive_fields_found?.length > 0 ? 'fail' : 'pass'}`}>
                           {result.signal_breakdown?.sensitive_fields_found?.length > 0 ? 'HARVESTING' : 'SECURE'}
                         </span>
                       </div>
-                      <p className="step-layer-desc">
+                      <p className="tile-desc">
                         {result.signal_breakdown?.sensitive_fields_found?.length > 0 
-                          ? `Detects unauthorized harvesting triggers in URL/forms on an unofficial domain!`
+                          ? `Harvesting triggers found: [${result.signal_breakdown.sensitive_fields_found.join(', ')}] on non-gov site!` 
                           : 'No unauthorized Aadhaar, PAN, OTP, or biometric credential harvesting forms detected.'}
                       </p>
                     </div>
                   </div>
 
                   {/* Layer 4 */}
-                  <div className="forensic-step-card">
-                    <span className="step-status-icon">{result.impersonated ? '🔴' : '🟢'}</span>
-                    <div className="step-content-meta">
-                      <div className="step-title-row">
-                        <span className="step-layer-name">{t.layer4Title}</span>
-                        <span className={`step-status-pill ${result.impersonated ? 'fail' : 'pass'}`}>
+                  <div className="forensic-tile-item">
+                    <span className="tile-status-icon">{result.impersonated ? '🔴' : '🟢'}</span>
+                    <div className="tile-content-wrapper">
+                      <div className="tile-header-line">
+                        <span className="tile-title">{t.layer4}</span>
+                        <span className={`tile-status-tag ${result.impersonated ? 'fail' : 'pass'}`}>
                           {result.impersonated ? 'CLONE MATCH' : 'AUTHENTIC'}
                         </span>
                       </div>
-                      <p className="step-layer-desc">
+                      <p className="tile-desc">
                         {result.impersonated 
-                          ? `AI Neural engine flagged this site as a lookalike clone of "${result.target_entity || 'Gov Portal'}"!`
-                          : 'Visual styling and DOM structure are consistent with authentic baseline standards.'}
+                          ? `AI visual matching identified deceptive clone of "${result.target_entity || 'Gov Portal'}"!` 
+                          : 'Visual styling and DOM structure are consistent with authentic baseline.'}
                       </p>
                     </div>
                   </div>
 
                   {/* Layer 5 */}
-                  <div className="forensic-step-card">
-                    <span className="step-status-icon">🟢</span>
-                    <div className="step-content-meta">
-                      <div className="step-title-row">
-                        <span className="step-layer-name">{t.layer5Title}</span>
-                        <span className="step-status-pill pass">ANALYZED</span>
+                  <div className="forensic-tile-item">
+                    <span className="tile-status-icon">🟢</span>
+                    <div className="tile-content-wrapper">
+                      <div className="tile-header-line">
+                        <span className="tile-title">{t.layer5}</span>
+                        <span className="tile-status-tag pass">ANALYZED</span>
                       </div>
-                      <p className="step-layer-desc">
+                      <p className="tile-desc">
                         {result.signal_breakdown?.domain_age_days 
-                          ? `Domain registered ${result.signal_breakdown.domain_age_days} days ago via ${result.signal_breakdown.registrar || 'Public Registrar'}.`
-                          : 'Domain registration records analyzed.'}
+                          ? `Domain registered ${result.signal_breakdown.domain_age_days} days ago via ${result.signal_breakdown.registrar || 'Public Registrar'}.` 
+                          : 'Domain registration records verified.'}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Bottom Action Triggers */}
-                <div className="verdict-footer-actions">
-                  <button 
-                    type="button" 
-                    className="btn-dossier-download"
-                    onClick={() => setDossierOpen(true)}
-                  >
-                    📄 {t.card3Btn}
+                {/* Dossier & 1930 Actions */}
+                <div style={{ display: 'flex', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
+                  <button className="btn-primary-ux4g" onClick={() => setDossierOpen(true)}>
+                    📄 {t.dossierBtn}
                   </button>
-
-                  <a href="tel:1930" className="btn-1930-call">
-                    📞 {t.card2Btn}
+                  <a href="tel:1930" className="btn-secondary-ux4g" style={{ background: 'var(--gov-red)', color: '#fff', border: 'none' }}>
+                    📞 {t.helpline1930}
                   </a>
                 </div>
 
@@ -719,155 +505,139 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
             </div>
 
           </div>
-        )}
+        </section>
+      )}
 
-        {/* 3 Citizen Category Cards (Inspired by cybercrime.gov.in screenshots) */}
-        <div className="section-headline-group">
-          <span className="section-tag">NATIONAL DEFENSE INITIATIVE</span>
-          <h3 className="section-main-heading">{t.sectionTitle}</h3>
-          <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>{t.sectionSub}</p>
+      {/* 5. Citizen 3-Card Grid */}
+      <section className="ux4g-cards-section">
+        <div className="cards-headline-block">
+          <h3 className="cards-headline-title">Citizen Cyber Defense Services</h3>
+          <p className="cards-headline-sub">Instant safeguards and real-time defense against deceptive portals</p>
         </div>
 
-        <div className="citizen-cards-grid">
+        <div className="ux4g-cards-grid">
           {/* Card 1: Women & Child */}
-          <div className="citizen-action-card">
-            <div className="card-banner-graphic women-child">
-              <span className="graphic-hero-emoji">👩‍👧‍👦</span>
+          <div className="ux4g-card-item">
+            <div className="card-header-art art-1">
+              <span className="art-emoji">👩‍👧‍👦</span>
             </div>
-            <div className="card-content-area">
-              <h4 className="card-title-text">{t.card1Title}</h4>
-              <p className="card-desc-text">{t.card1Desc}</p>
-              <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="card-action-btn">
-                {t.card1Btn} →
+            <div className="card-text-body">
+              <h4 className="card-title-header">{t.card1Title}</h4>
+              <p className="card-desc-paragraph">{t.card1Desc}</p>
+              <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="card-cta-button">
+                Report Incident →
               </a>
             </div>
           </div>
 
           {/* Card 2: Financial Fraud */}
-          <div className="citizen-action-card">
-            <div className="card-banner-graphic financial">
-              <span className="graphic-hero-emoji">💳</span>
+          <div className="ux4g-card-item">
+            <div className="card-header-art art-2">
+              <span className="art-emoji">💳</span>
             </div>
-            <div className="card-content-area">
-              <h4 className="card-title-text">{t.card2Title}</h4>
-              <p className="card-desc-text">{t.card2Desc}</p>
-              <a href="tel:1930" className="card-action-btn" style={{ background: 'var(--gov-red)' }}>
-                {t.card2Btn}
+            <div className="card-text-body">
+              <h4 className="card-title-header">{t.card2Title}</h4>
+              <p className="card-desc-paragraph">{t.card2Desc}</p>
+              <a href="tel:1930" className="card-cta-button" style={{ background: 'var(--gov-red)' }}>
+                {t.helpline1930}
               </a>
             </div>
           </div>
 
-          {/* Card 3: Other Cyber Crimes & Incident Dossier */}
-          <div className="citizen-action-card">
-            <div className="card-banner-graphic cyber-crime">
-              <span className="graphic-hero-emoji">🛡️</span>
+          {/* Card 3: CERT-In Dossier */}
+          <div className="ux4g-card-item">
+            <div className="card-header-art art-3">
+              <span className="art-emoji">🛡️</span>
             </div>
-            <div className="card-content-area">
-              <h4 className="card-title-text">{t.card3Title}</h4>
-              <p className="card-desc-text">{t.card3Desc}</p>
-              <button 
-                type="button" 
-                className="card-action-btn"
-                onClick={() => setDossierOpen(true)}
-              >
-                {t.card3Btn} →
+            <div className="card-text-body">
+              <h4 className="card-title-header">{t.card3Title}</h4>
+              <p className="card-desc-paragraph">{t.card3Desc}</p>
+              <button className="card-cta-button" onClick={() => setDossierOpen(true)}>
+                {t.dossierBtn} →
               </button>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Resources & Citizen Awareness Row */}
-        <div className="resources-grid">
-          <div className="resource-item-box">
-            <div className="resource-icon-circle">📖</div>
-            <h5 className="resource-name">{t.res1}</h5>
-            <p className="resource-brief">{t.res1Sub}</p>
-          </div>
-          <div className="resource-item-box">
-            <div className="resource-icon-circle">📞</div>
-            <h5 className="resource-name">{t.res2}</h5>
-            <p className="resource-brief">{t.res2Sub}</p>
-          </div>
-          <div className="resource-item-box">
-            <div className="resource-icon-circle">📢</div>
-            <h5 className="resource-name">{t.res3}</h5>
-            <p className="resource-brief">{t.res3Sub}</p>
-          </div>
-          <div className="resource-item-box">
-            <div className="resource-icon-circle">⚠️</div>
-            <h5 className="resource-name">{t.res4}</h5>
-            <p className="resource-brief">{t.res4Sub}</p>
-          </div>
-        </div>
+      {/* 6. Floating Accessibility FAB (UX4G Standard) */}
+      <button 
+        className="ux4g-fab-btn"
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open Accessibility Options (Ctrl+F2)"
+        title="Accessibility Options (Ctrl+F2)"
+      >
+        <span className="fab-icon">♿</span>
+        <span className="fab-shortcut-text">Ctrl+F2</span>
+      </button>
 
-      </main>
+      {/* 7. UX4G Full Accessibility Drawer */}
+      <UX4GDrawer 
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        t={t}
+        onVoiceTrigger={handleSpeakVerdict}
+      />
 
-      {/* Dossier Modal Dialog */}
+      {/* 8. Dossier Modal */}
       {dossierOpen && (
-        <div className="modal-overlay" onClick={() => setDossierOpen(false)}>
-          <div className="modal-dialog-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header-bar">
-              <h4 className="modal-title-text">📄 {t.dossierTitle}</h4>
-              <button type="button" className="modal-close-btn" onClick={() => setDossierOpen(false)}>×</button>
+        <div className="ux4g-drawer-backdrop" onClick={() => setDossierOpen(false)}>
+          <div className="verdict-master-box" style={{ maxWidth: '700px', width: '90%', margin: 'auto', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ background: '#0f172a', color: '#fff', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h4 style={{ fontWeight: 800 }}>📄 CERT-In Cyber Security Incident Dossier</h4>
+              <button style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '1.4rem', cursor: 'pointer' }} onClick={() => setDossierOpen(false)}>×</button>
             </div>
-            <pre className="modal-content-body">
-              {generateDossierText() || "No active scan data to generate dossier. Please scan a URL first."}
+            <pre style={{ padding: '20px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.82rem', background: '#f8fafc', color: '#0f172a', flex: 1, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+              {generateDossierText() || "Please perform a scan first to generate evidence."}
             </pre>
-            <div className="modal-footer-bar">
+            <div style={{ padding: '14px 20px', background: '#fff', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
               <button 
-                type="button" 
-                className="card-action-btn"
+                className="btn-primary-ux4g"
                 onClick={() => {
                   navigator.clipboard.writeText(generateDossierText());
                   setCopied(true);
-                  setTimeout(() => setCopied(false), 2500);
+                  setTimeout(() => setCopied(false), 2000);
                 }}
               >
-                {copied ? `✅ ${t.copied}` : `📋 ${t.copyDossier}`}
+                {copied ? "✅ Copied!" : "📋 Copy Dossier"}
               </button>
-              <button 
-                type="button" 
-                className="a11y-btn" 
-                style={{ background: '#718096', color: '#fff' }}
-                onClick={() => setDossierOpen(false)}
-              >
-                {t.close}
+              <button className="btn-secondary-ux4g" onClick={() => setDossierOpen(false)}>
+                Close
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Sovereign National Defense Footer */}
-      <footer className="portal-footer" role="contentinfo">
-        <div className="footer-container">
-          <div className="footer-top-row">
+      {/* 9. UX4G Sovereign Footer */}
+      <footer className="ux4g-portal-footer" role="contentinfo">
+        <div className="footer-inner-wrap">
+          <div className="footer-main-columns">
             <div>
-              <h4 className="footer-about-heading">GovShield Sentinel Grid (SIH1454)</h4>
-              <p className="footer-desc-text">
-                An AI/ML-driven sovereign cyber protection layer designed to detect lookalike phishing websites, credential harvesting forms, and typosquatting scams targeting Indian citizens.
+              <h4 className="footer-heading">GovShield Sentinel Grid (SIH1454)</h4>
+              <p className="footer-text">
+                An AI/ML-driven sovereign cyber protection layer designed in alignment with the UX4G Design System 3.0 to protect 1.4 billion Indian citizens from deceptive phishing portals and typosquatting scams.
               </p>
             </div>
             <div>
-              <h4 className="footer-about-heading">National Portals</h4>
-              <ul className="footer-links-list">
-                <li className="footer-link-item"><a href="https://india.gov.in" target="_blank" rel="noreferrer">National Portal of India (india.gov.in)</a></li>
-                <li className="footer-link-item"><a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer">National Cyber Crime Reporting (I4C)</a></li>
-                <li className="footer-link-item"><a href="https://cert-in.org.in" target="_blank" rel="noreferrer">CERT-In Incident Response</a></li>
+              <h4 className="footer-heading">National Portals</h4>
+              <ul className="footer-nav-list">
+                <li><a href="https://ux4g.gov.in" target="_blank" rel="noreferrer">UX4G Design System (ux4g.gov.in)</a></li>
+                <li><a href="https://india.gov.in" target="_blank" rel="noreferrer">National Portal of India (india.gov.in)</a></li>
+                <li><a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer">Cyber Crime Reporting Portal (I4C)</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="footer-about-heading">Emergency Helplines</h4>
-              <ul className="footer-links-list">
-                <li className="footer-link-item"><a href="tel:1930">1930 — Cyber Crime Fraud Helpline</a></li>
-                <li className="footer-link-item"><a href="tel:112">112 — National Emergency Service</a></li>
-                <li className="footer-link-item"><a href="tel:14440">14440 — Financial Fraud Alert</a></li>
+              <h4 className="footer-heading">Emergency Helplines</h4>
+              <ul className="footer-nav-list">
+                <li><a href="tel:1930">1930 — National Cyber Crime Helpline</a></li>
+                <li><a href="tel:112">112 — National Emergency Service</a></li>
+                <li><a href="tel:14440">14440 — Financial Fraud Toll-Free</a></li>
               </ul>
             </div>
           </div>
-
-          <div className="footer-bottom-bar">
-            <p>{t.footerText} | Smart India Hackathon 2026</p>
+          <div className="footer-credits-bar">
+            <p>Aligned with UX4G Design System 3.0 • Developed for Smart India Hackathon 2026</p>
           </div>
         </div>
       </footer>
