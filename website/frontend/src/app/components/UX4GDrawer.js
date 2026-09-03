@@ -180,19 +180,8 @@ export default function UX4GDrawer({
           {/* Section 3: Orientation & Assistive Tools */}
           <div className="ux4g-section-group">
             <h4 className="ux4g-section-title">{t.assistiveTools || "Orientation & Assistive Tools"}</h4>
-            <div className="ux4g-tiles-grid cols-3">
+            <div className="ux4g-tiles-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
               
-              <button 
-                className="ux4g-tile-btn"
-                onClick={() => {
-                  if (onVoiceTrigger) onVoiceTrigger();
-                  onClose();
-                }}
-              >
-                <span className="tile-icon">🗣️</span>
-                <span className="tile-label">{t.voiceSupport || "Voice Support"}</span>
-              </button>
-
               <button 
                 className={`ux4g-tile-btn ${hideImages ? 'active' : ''}`}
                 onClick={() => setHideImages(!hideImages)}
