@@ -487,7 +487,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
             </div>
           </div>
 
-          {/* Card 3: CERT-In Dossier */}
+          {/* Card 3: Other Cyber Crime */}
           <div className="ux4g-card-item">
             <div className="card-banner-graphic-custom">
               <CyberCrimeGraphic />
@@ -495,9 +495,9 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
             <div className="card-text-body">
               <h4 className="card-title-header">{t.card3Title}</h4>
               <p className="card-desc-paragraph">{t.card3Desc}</p>
-              <button className="card-cta-button" onClick={() => setDossierOpen(true)}>
-                {t.dossierBtn} →
-              </button>
+              <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="card-cta-button">
+                {t.card3Btn || t.card1Btn}
+              </a>
             </div>
           </div>
         </div>
