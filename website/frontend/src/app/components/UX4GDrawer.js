@@ -18,26 +18,39 @@ export default function UX4GDrawer({
   const [hideImages, setHideImages] = useState(false);
   const [pauseAnim, setPauseAnim] = useState(false);
 
-  // Apply classes to document body
+  // Apply classes to document root and body
   useEffect(() => {
+    const root = document.documentElement;
     const body = document.body;
     
     // Reset filters
+    root.classList.remove('ux4g-monochrome', 'ux4g-high-saturate', 'ux4g-low-saturate', 'ux4g-dark-mode', 'ux4g-invert');
     body.classList.remove('ux4g-monochrome', 'ux4g-high-saturate', 'ux4g-low-saturate', 'ux4g-dark-mode', 'ux4g-invert');
-    if (colorMode === 'monochrome') body.classList.add('ux4g-monochrome');
-    if (colorMode === 'highSaturate') body.classList.add('ux4g-high-saturate');
-    if (colorMode === 'lowSaturate') body.classList.add('ux4g-low-saturate');
-    if (colorMode === 'darkMode') body.classList.add('ux4g-dark-mode');
-    if (colorMode === 'invert') body.classList.add('ux4g-invert');
+    
+    if (colorMode === 'monochrome') { root.classList.add('ux4g-monochrome'); body.classList.add('ux4g-monochrome'); }
+    if (colorMode === 'highSaturate') { root.classList.add('ux4g-high-saturate'); body.classList.add('ux4g-high-saturate'); }
+    if (colorMode === 'lowSaturate') { root.classList.add('ux4g-low-saturate'); body.classList.add('ux4g-low-saturate'); }
+    if (colorMode === 'darkMode') { root.classList.add('ux4g-dark-mode'); body.classList.add('ux4g-dark-mode'); }
+    if (colorMode === 'invert') { root.classList.add('ux4g-invert'); body.classList.add('ux4g-invert'); }
 
-    // Content
-    if (biggerText) body.classList.add('ux4g-bigger-text'); else body.classList.remove('ux4g-bigger-text');
-    if (lineHeight) body.classList.add('ux4g-line-height'); else body.classList.remove('ux4g-line-height');
-    if (textSpacing) body.classList.add('ux4g-text-spacing'); else body.classList.remove('ux4g-text-spacing');
-    if (highlightLinks) body.classList.add('ux4g-highlight-links'); else body.classList.remove('ux4g-highlight-links');
-    if (dyslexiaFont) body.classList.add('ux4g-dyslexia'); else body.classList.remove('ux4g-dyslexia');
-    if (hideImages) body.classList.add('ux4g-hide-images'); else body.classList.remove('ux4g-hide-images');
-    if (pauseAnim) body.classList.add('ux4g-pause-anim'); else body.classList.remove('ux4g-pause-anim');
+    // Content adjustments applied to root & body
+    [
+      { active: biggerText, name: 'ux4g-bigger-text' },
+      { active: lineHeight, name: 'ux4g-line-height' },
+      { active: textSpacing, name: 'ux4g-text-spacing' },
+      { active: highlightLinks, name: 'ux4g-highlight-links' },
+      { active: dyslexiaFont, name: 'ux4g-dyslexia' },
+      { active: hideImages, name: 'ux4g-hide-images' },
+      { active: pauseAnim, name: 'ux4g-pause-anim' },
+    ].forEach(({ active, name }) => {
+      if (active) {
+        root.classList.add(name);
+        body.classList.add(name);
+      } else {
+        root.classList.remove(name);
+        body.classList.remove(name);
+      }
+    });
   }, [colorMode, biggerText, lineHeight, textSpacing, highlightLinks, dyslexiaFont, hideImages, pauseAnim]);
 
   const handleReset = () => {

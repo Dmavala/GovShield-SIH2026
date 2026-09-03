@@ -36,11 +36,11 @@
 }
 
 /* Accessibility Variable Overrides applied by UX4G Drawer */
-body.ux4g-monochrome { filter: grayscale(100%); }
-body.ux4g-high-saturate { filter: saturate(200%); }
-body.ux4g-low-saturate { filter: saturate(50%); }
-body.ux4g-invert { filter: invert(100%) hue-rotate(180deg); }
-body.ux4g-dark-mode {
+html.ux4g-monochrome, body.ux4g-monochrome { filter: grayscale(100%); }
+html.ux4g-high-saturate, body.ux4g-high-saturate { filter: saturate(200%); }
+html.ux4g-low-saturate, body.ux4g-low-saturate { filter: saturate(50%); }
+html.ux4g-invert, body.ux4g-invert { filter: invert(100%) hue-rotate(180deg); }
+html.ux4g-dark-mode, body.ux4g-dark-mode {
   --bg-canvas: #090d16;
   --bg-subtle: #131a29;
   --bg-card: #182234;
@@ -50,20 +50,88 @@ body.ux4g-dark-mode {
   background-color: #090d16;
   color: #f8fafc;
 }
-body.ux4g-bigger-text { font-size: 118% !important; }
-body.ux4g-line-height { line-height: 2 !important; }
-body.ux4g-text-spacing { letter-spacing: 0.06em !important; word-spacing: 0.12em !important; }
-body.ux4g-highlight-links a, body.ux4g-highlight-links button {
+
+/* Bigger Text - WCAG 2.1 AAA Scaling */
+html.ux4g-bigger-text {
+  font-size: 125% !important;
+}
+body.ux4g-bigger-text {
+  font-size: 1.25rem !important;
+}
+body.ux4g-bigger-text h1,
+body.ux4g-bigger-text h2,
+body.ux4g-bigger-text h3,
+body.ux4g-bigger-text h4,
+body.ux4g-bigger-text h5,
+body.ux4g-bigger-text h6,
+body.ux4g-bigger-text p,
+body.ux4g-bigger-text span:not(.art-emoji):not(.fab-icon):not(.tile-icon),
+body.ux4g-bigger-text a,
+body.ux4g-bigger-text button:not(.ux4g-fab-btn):not(.ux4g-tile-btn),
+body.ux4g-bigger-text input,
+body.ux4g-bigger-text label,
+body.ux4g-bigger-text li,
+body.ux4g-bigger-text pre,
+body.ux4g-bigger-text .ux4g-hero-heading,
+body.ux4g-bigger-text .ux4g-hero-subtext,
+body.ux4g-bigger-text .ux4g-search-input,
+body.ux4g-bigger-text .verify-action-btn,
+body.ux4g-bigger-text .card-title-header,
+body.ux4g-bigger-text .card-desc-paragraph,
+body.ux4g-bigger-text .card-cta-button,
+body.ux4g-bigger-text .brand-title-ux4g,
+body.ux4g-bigger-text .brand-subtitle-ux4g,
+body.ux4g-bigger-text .verdict-status-title,
+body.ux4g-bigger-text .verdict-status-sub,
+body.ux4g-bigger-text .tile-title,
+body.ux4g-bigger-text .tile-desc,
+body.ux4g-bigger-text .citizen-advisory-p,
+body.ux4g-bigger-text .cards-headline-title,
+body.ux4g-bigger-text .cards-headline-sub {
+  font-size: 1.25em !important;
+  line-height: 1.5 !important;
+}
+
+body.ux4g-line-height,
+body.ux4g-line-height p,
+body.ux4g-line-height h1,
+body.ux4g-line-height h2,
+body.ux4g-line-height h3,
+body.ux4g-line-height h4,
+body.ux4g-line-height li,
+body.ux4g-line-height span {
+  line-height: 2 !important;
+}
+
+body.ux4g-text-spacing,
+body.ux4g-text-spacing p,
+body.ux4g-text-spacing h1,
+body.ux4g-text-spacing h2,
+body.ux4g-text-spacing h3,
+body.ux4g-text-spacing h4,
+body.ux4g-text-spacing a,
+body.ux4g-text-spacing button,
+body.ux4g-text-spacing input {
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.16em !important;
+}
+
+body.ux4g-highlight-links a,
+body.ux4g-highlight-links button:not(.ux4g-tile-btn):not(.ux4g-close-btn) {
   text-decoration: underline 3px #ffeb3b !important;
   color: #1a73e8 !important;
   font-weight: 800 !important;
 }
+
 body.ux4g-dyslexia * {
   font-family: 'Comic Sans MS', cursive, sans-serif !important;
 }
-body.ux4g-hide-images img, body.ux4g-hide-images svg:not(.keep-icon) {
+
+body.ux4g-hide-images img,
+body.ux4g-hide-images svg:not(.emblem-icon-ux4g):not(.keep-icon) {
   opacity: 0.05 !important;
 }
+
 body.ux4g-pause-anim * {
   animation: none !important;
   transition: none !important;
