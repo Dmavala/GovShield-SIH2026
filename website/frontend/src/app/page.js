@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { scanWebsiteClientSide } from './lib/scannerEngine';
 import { playAcousticAlert, selectBestVoice } from './lib/audioSynthesizer';
 import { INDIC_LANGUAGES, UX4G_STRINGS } from './lib/ux4gLanguages';
@@ -211,6 +212,9 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
           </div>
 
           <div className="nav-cta-group">
+            <Link href="/app-preview" className="btn-secondary-ux4g" style={{ color: 'var(--ux4g-primary)', fontWeight: 800 }}>
+              📱 Android App
+            </Link>
             <a href="tel:1930" className="btn-secondary-ux4g" style={{ color: 'var(--gov-red)' }}>
               📞 1930 Helpline
             </a>

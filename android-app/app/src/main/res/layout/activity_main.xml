@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="#F8FAFC"
+    android:padding="20dp">
+
+    <!-- Top Tricolor Bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#FF9933" />
+
+    <!-- Header with Official Logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="54dp"
+            android:layout_height="64dp"
+            android:src="@drawable/govshield_logo"
+            android:contentDescription="GovShield Sovereign Emblem" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GovShield Grid 3.0"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#0F172A" />
+
+            <TextView
+                android:id="@+id/txtSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="National Cyber Defense • SIH 2026"
+                android:textSize="12sp"
+                android:textColor="#64748B" />
+        </LinearLayout>
+
+        <!-- Audio Help Button -->
+        <ImageButton
+            android:id="@+id/btnVoiceHelp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:contentDescription="Listen Voice Guidance" />
+    </LinearLayout>
+
+    <!-- Language Quick Bar -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginBottom="24dp">
+        
+        <LinearLayout
+            android:id="@+id/langContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            
+            <Button
+                android:id="@+id/btnLangHi"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="हिन्दी"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:background="#5C3CF6"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnLangEn"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="English"
+                android:textSize="13sp"
+                android:background="#E2E8F0"
+                android:textColor="#0F172A"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnLangBn"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="বাংলা"
+                android:textSize="13sp"
+                android:background="#E2E8F0"
+                android:textColor="#0F172A"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnLangTa"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="தமிழ்"
+                android:textSize="13sp"
+                android:background="#E2E8F0"
+                android:textColor="#0F172A"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnLangTe"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="తెలుగు"
+                android:textSize="13sp"
+                android:background="#E2E8F0"
+                android:textColor="#0F172A" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Giant 1-Tap Shield Activation Button Area -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <!-- Outer Pulsing Ring -->
+        <View
+            android:id="@+id/viewPulseRing"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
+            android:layout_centerInParent="true"
+            android:background="#EDE9FE" />
+
+        <!-- Massive Circular Action Button -->
+        <LinearLayout
+            android:id="@+id/btnBigShield"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#5C3CF6"
+            android:elevation="12dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/txtShieldIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛡️"
+                android:textSize="64sp" />
+
+            <TextView
+                android:id="@+id/txtShieldStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="टैप करें"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtShieldSub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="सुरक्षा चालू करें"
+                android:textSize="12sp"
+                android:textColor="#E0E7FF"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Status Card -->
+    <LinearLayout
+        android:id="@+id/cardStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:padding="16dp"
+        android:elevation="4dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/txtStatusDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📢 ऑडियो सहायता: बड़े शील्ड बटन को दबाकर सुरक्षा चालू करें।"
+            android:textSize="14sp"
+            android:textColor="#334155"
+            android:lineSpacingExtra="4dp" />
+    </LinearLayout>
+
+    <!-- Emergency 1930 Helpline Button -->
+    <Button
+        android:id="@+id/btnHelpline1930"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:text="📞 1930 साइबर हेल्पलाइन"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="#BE123C"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>
