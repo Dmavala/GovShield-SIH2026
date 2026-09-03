@@ -564,7 +564,6 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
             <div>
               <h4 className="footer-heading">{t.nationalPortalsHeading}</h4>
               <ul className="footer-nav-list">
-                <li><a href="https://ux4g.gov.in" target="_blank" rel="noreferrer">UX4G Design System (ux4g.gov.in)</a></li>
                 <li><a href="https://india.gov.in" target="_blank" rel="noreferrer">National Portal of India (india.gov.in)</a></li>
                 <li><a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer">Cyber Crime Reporting Portal (I4C)</a></li>
               </ul>
