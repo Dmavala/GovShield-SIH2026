@@ -233,8 +233,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
         <div className="ux4g-hero-container">
           
           <h2 className="ux4g-hero-heading">
-            {t.heroTitlePrefix} <br />
-            <span className="ux4g-gradient-ai">{t.heroTitleAi}</span>
+            {t.heroTitlePrefix}
           </h2>
 
           <p className="ux4g-hero-subtext">
