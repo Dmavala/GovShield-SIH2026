@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { scanWebsiteClientSide } from './lib/scannerEngine';
 import { playAcousticAlert, selectBestVoice } from './lib/audioSynthesizer';
-import { UX4G_STRINGS } from './lib/ux4gLanguages';
+import { INDIC_LANGUAGES, UX4G_STRINGS } from './lib/ux4gLanguages';
 import UX4GDrawer from './components/UX4GDrawer';
 import LanguageDropdown from './components/LanguageDropdown';
 
@@ -74,28 +74,19 @@ export default function UX4GHomePage() {
       playAcousticAlert('caution');
     }
 
-    // 2. Build natural script
+    // 2. Build natural script for selected Indic language
     let textToSpeak = "";
-    if (lang === 'hi') {
-      if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
-        textToSpeak = `सावधान! ... यह वेबसाइट पूरी तरह फर्जी है, और सरकारी पोर्टल की नकल कर रही है। ... कृपया अपना आधार नंबर, बैंक विवरण या ओटीपी कभी भी साझा न करें। ... तुरंत 1930 साइबर हेल्पलाइन पर कॉल करें।`;
-      } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
-        textToSpeak = `सत्यापित! ... यह भारत सरकार का प्रामाणिक और सुरक्षित आधिकारिक पोर्टल है। ... आप इस पर विश्वास के साथ कार्य कर सकते हैं।`;
-      } else {
-        textToSpeak = `सतर्क रहें! ... यह वेबसाइट संदिग्ध है, और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है।`;
-      }
+    if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
+      textToSpeak = t.speechThreat || t.advisoryThreat;
+    } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
+      textToSpeak = t.speechSafe || t.advisorySafe;
     } else {
-      if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
-        textToSpeak = `Critical Warning! ... This website is a deceptive clone imitating government services. ... Never enter your Aadhaar, bank details, or OTP here. ... Call Helpline 1930 immediately!`;
-      } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
-        textToSpeak = `Verified Authentic! ... This domain is an authenticated Government of India sovereign portal.`;
-      } else {
-        textToSpeak = `Caution! ... This domain is unverified on the official government registry.`;
-      }
+      textToSpeak = t.speechCaution || t.advisoryCaution;
     }
 
+    const currentLangObj = INDIC_LANGUAGES.find(l => l.code === lang) || INDIC_LANGUAGES[0];
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+    utterance.lang = currentLangObj.bcp47 || 'hi-IN';
     utterance.rate = 0.88;
     utterance.pitch = 1.04;
 
