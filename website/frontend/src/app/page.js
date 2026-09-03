@@ -31,7 +31,6 @@ export default function UX4GHomePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [dossierOpen, setDossierOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -101,39 +100,6 @@ export default function UX4GHomePage() {
     setTimeout(() => {
       window.speechSynthesis.speak(utterance);
     }, 150);
-  };
-
-  // Mic Speech Input
-  const handleVoiceInput = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Voice input is not supported in this browser. Please enter URL manually.");
-      return;
-    }
-
-    if (isListening) return;
-
-    try {
-      const recognition = new SpeechRecognition();
-      recognition.lang = lang === 'hi' ? 'hi-IN' : 'en-US';
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onstart = () => setIsListening(true);
-      recognition.onend = () => setIsListening(false);
-      recognition.onerror = () => setIsListening(false);
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript.toLowerCase().trim().replace(/\s+/g, '');
-        setUrl(transcript);
-        setIsListening(false);
-      };
-
-      recognition.start();
-    } catch (e) {
-      console.error(e);
-      setIsListening(false);
-    }
   };
 
   // Execute Standalone Client-Side Inspection
@@ -290,16 +256,6 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
               onKeyDown={(e) => e.key === 'Enter' && handleScan()}
               aria-label="Enter website URL to verify"
             />
-
-            <button 
-              type="button"
-              className={`mic-btn-ux4g ${isListening ? 'listening' : ''}`}
-              onClick={handleVoiceInput}
-              title="Speak URL / बोलकर लिंक दर्ज करें"
-              aria-label="Voice input"
-            >
-              🎤
-            </button>
 
             <button 
               type="button"
