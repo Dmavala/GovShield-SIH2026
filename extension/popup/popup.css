@@ -82,26 +82,39 @@ body.high-contrast .top-bar {
   align-items: center;
   gap: 10px;
 }
-.flag-icon {
-  font-size: 1.4rem;
+.brand-logo-img {
+  width: 28px;
+  height: 34px;
+  object-fit: contain;
 }
 .brand-text-col {
   display: flex;
   flex-direction: column;
 }
 .brand-main {
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 900;
   color: var(--gov-navy);
   line-height: 1.1;
+  display: flex;
+  align-items: center;
+}
+.grid-pill {
+  background: #eff2ff;
+  color: #5c3cf6;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  margin-left: 6px;
 }
 body.high-contrast .brand-main {
   color: #ffffff;
 }
 .brand-sub {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  color: var(--gov-saffron);
+  color: #64748b;
   letter-spacing: 0.3px;
 }
 

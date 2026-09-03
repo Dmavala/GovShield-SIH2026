@@ -88,22 +88,21 @@
       return;
     }
 
+    const logoUrl = chrome.runtime.getURL('icons/logo.png');
+
     if (verdict === "PHISHING_CLONE" || score >= 66) {
       bannerClass = "govshield-banner-risk";
       iconSvg = `
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
-        </svg>
+        <img src="${logoUrl}" alt="GovShield Emblem" style="width: 34px; height: 40px; object-fit: contain; flex-shrink: 0;" />
       `;
       titleText = "GOVSHIELD CYBER DEFENSE ALERT";
-      pillText = `RISK SCORE: ${score}/100 • CRITICAL`;
-      descHtml = `Deceptive lookalike domain detected! This website imitates <strong>${targetEntity}</strong> to steal citizen credentials. Do NOT enter sensitive information.`;
+      pillText = `RISK SCORE: ${score}/100 • CRITICAL THREAT`;
+      descHtml = `⚠️ Deceptive lookalike domain detected! This website imitates <strong>${targetEntity}</strong> to steal citizen credentials. Never enter Aadhaar, PAN, Bank Details or OTP here!`;
       if (aiInsight) {
-        descHtml += ` <span class="govshield-ai-insight">🤖 AI: ${aiInsight}</span>`;
+        descHtml += ` <span class="govshield-ai-insight">🛡️ ${aiInsight}</span>`;
       }
       actionsHtml = `
+        <a href="tel:1930" class="govshield-btn" style="background: #be123c; color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 700;">📞 1930 Helpline</a>
         <button id="govshield-leave-btn" class="govshield-btn govshield-btn-primary">Leave Unsafe Site</button>
         <button id="govshield-dismiss-btn" class="govshield-btn govshield-btn-secondary">Dismiss</button>
       `;
@@ -111,16 +110,13 @@
       // Suspicious site
       bannerClass = "govshield-banner-susp";
       iconSvg = `
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+        <img src="${logoUrl}" alt="GovShield Emblem" style="width: 34px; height: 40px; object-fit: contain; flex-shrink: 0;" />
       `;
       titleText = "GOVSHIELD SECURITY NOTICE: POTENTIAL LOOKALIKE";
       pillText = `RISK SCORE: ${score}/100 • SUSPICIOUS`;
-      descHtml = `Caution: This website contains keywords matching <strong>${targetEntity}</strong> but is NOT hosted on an official .gov.in domain. Verify carefully before submitting details.`;
+      descHtml = `Caution: This website contains keywords matching <strong>${targetEntity}</strong> but is NOT hosted on an official sovereign .gov.in domain. Verify carefully.`;
       actionsHtml = `
+        <a href="tel:1930" class="govshield-btn" style="background: #92400e; color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 700;">📞 1930 Helpline</a>
         <button id="govshield-dismiss-btn" class="govshield-btn govshield-btn-secondary">Acknowledge</button>
       `;
     }
@@ -135,7 +131,6 @@
           <div class="govshield-banner-title">
             <span>${titleText}</span>
             <span class="govshield-risk-pill">${pillText}</span>
-            <span class="govshield-ai-tag">Gemini 2.0 Flash AI</span>
           </div>
           <div class="govshield-banner-desc">
             ${descHtml}

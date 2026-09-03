@@ -10,18 +10,12 @@ import { WomenChildGraphic, FinancialFraudGraphic, CyberCrimeGraphic } from './c
 
 // Sovereign Emblem Component
 const AshokaEmblem = () => (
-  <svg className="emblem-icon-ux4g" viewBox="0 0 100 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="National Emblem of India">
-    <path d="M50 10 C35 10 25 25 25 45 C25 65 38 85 50 95 C62 85 75 65 75 45 C75 25 65 10 50 10 Z" fill="#5c3cf6" opacity="0.9" />
-    <circle cx="50" cy="40" r="14" fill="#ffffff" />
-    <circle cx="50" cy="40" r="11" fill="#5c3cf6" />
-    <circle cx="50" cy="40" r="3" fill="#ffffff" />
-    <line x1="50" y1="29" x2="50" y2="51" stroke="#ffffff" strokeWidth="1" />
-    <line x1="39" y1="40" x2="61" y2="40" stroke="#ffffff" strokeWidth="1" />
-    <line x1="42" y1="32" x2="58" y2="48" stroke="#ffffff" strokeWidth="1" />
-    <line x1="42" y1="48" x2="58" y2="32" stroke="#ffffff" strokeWidth="1" />
-    <rect x="30" y="95" width="40" height="10" rx="3" fill="#ff6b35" />
-    <text x="50" y="118" textAnchor="middle" fill="#0f172a" fontSize="10" fontWeight="900" fontFamily="serif">सत्यमेव जयते</text>
-  </svg>
+  <img 
+    src="/logo.png" 
+    alt="GovShield National Cyber Defense Emblem" 
+    className="emblem-icon-ux4g"
+    style={{ objectFit: 'contain', width: '46px', height: '54px' }}
+  />
 );
 
 export default function UX4GHomePage() {
