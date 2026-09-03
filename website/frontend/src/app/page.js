@@ -211,7 +211,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
               <div className="brand-title-ux4g">
                 GovShield <span className="accent-pill">Grid 3.0</span>
               </div>
-              <div className="brand-subtitle-ux4g">
+              <div className="brand-subtitle-ux4g ux4g-lang-morph" key={`brand-${lang}`}>
                 {t.brandSubtitle}
               </div>
             </div>
@@ -230,7 +230,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
 
       {/* 3. UX4G Hero Section (Inspired by ux4g.gov.in) */}
       <section className="ux4g-hero-section" id="mainSearch">
-        <div className="ux4g-hero-container">
+        <div className="ux4g-hero-container ux4g-lang-morph" key={`hero-${lang}`}>
           
           <h2 className="ux4g-hero-heading">
             {t.heroTitlePrefix}
@@ -264,7 +264,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
           </div>
 
           {/* Quick Demo Chips */}
-          <div className="ux4g-chips-row">
+          <div className="ux4g-chips-row ux4g-lang-morph" key={`chips-${lang}`}>
             <span className="chips-tag-label">{t.quickTry}</span>
             <button 
               type="button" 
@@ -295,7 +295,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
       {/* 4. Active Scan Verdict Section */}
       {result && (
         <section className="ux4g-verdict-section" role="region" aria-live="polite">
-          <div className="verdict-master-box">
+          <div className="verdict-master-box ux4g-lang-morph" key={`verdict-${lang}-${result.url}`}>
             
             {/* Header Banner */}
             <div className={`verdict-header-banner ${currentStatus.type}`}>
@@ -452,12 +452,12 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
 
       {/* 5. Citizen 3-Card Grid */}
       <section className="ux4g-cards-section">
-        <div className="cards-headline-block">
+        <div className="cards-headline-block ux4g-lang-morph" key={`cardshead-${lang}`}>
           <h3 className="cards-headline-title">{t.sectionTitle}</h3>
           <p className="cards-headline-sub">{t.sectionSub}</p>
         </div>
 
-        <div className="ux4g-cards-grid">
+        <div className="ux4g-cards-grid ux4g-lang-morph" key={`cardsgrid-${lang}`}>
           {/* Card 1: Women & Child */}
           <div className="ux4g-card-item">
             <div className="card-banner-graphic-custom">
@@ -552,7 +552,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
       )}
 
       {/* 9. UX4G Sovereign Footer */}
-      <footer className="ux4g-portal-footer" role="contentinfo">
+      <footer className="ux4g-portal-footer ux4g-lang-morph" key={`footer-${lang}`} role="contentinfo">
         <div className="footer-inner-wrap">
           <div className="footer-main-columns">
             <div>

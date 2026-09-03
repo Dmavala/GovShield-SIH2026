@@ -1409,3 +1409,67 @@ body.ux4g-dark-mode .ux4g-drawer-footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Silky Smooth Morph & Dynamic Feature Animation Engine
+   ========================================================================== */
+
+@keyframes ux4gMorphFade {
+  0% {
+    opacity: 0.2;
+    transform: translateY(6px) scale(0.995);
+    filter: blur(3px);
+  }
+  60% {
+    opacity: 0.85;
+    filter: blur(0.6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.ux4g-lang-morph {
+  animation: ux4gMorphFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+/* Universal Smooth Morphing Transitions for Theme, Typography & Filter toggles */
+*, *::before, *::after {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              line-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              letter-spacing 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              word-spacing 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Spring Micro-Interactions on Interactive Elements */
+.ux4g-tile-btn,
+.ux4g-sample-chip,
+.btn-primary-ux4g,
+.btn-secondary-ux4g,
+.card-cta-button,
+.verify-action-btn,
+.btn-speech-trigger,
+.ux4g-fab-btn {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.ux4g-tile-btn:active,
+.ux4g-sample-chip:active,
+.btn-primary-ux4g:active,
+.btn-secondary-ux4g:active,
+.card-cta-button:active,
+.verify-action-btn:active,
+.btn-speech-trigger:active,
+.ux4g-fab-btn:active {
+  transform: scale(0.94) !important;
+}
