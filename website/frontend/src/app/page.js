@@ -231,11 +231,6 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
       <section className="ux4g-hero-section" id="mainSearch">
         <div className="ux4g-hero-container">
           
-          <div className="ux4g-version-pill">
-            <span>✨</span>
-            <span>{t.heroPill}</span>
-          </div>
-
           <h2 className="ux4g-hero-heading">
             {t.heroTitlePrefix} <br />
             <span className="ux4g-gradient-ai">{t.heroTitleAi}</span>
