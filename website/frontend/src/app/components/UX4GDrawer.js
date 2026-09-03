@@ -16,7 +16,6 @@ export default function UX4GDrawer({
   const [highlightLinks, setHighlightLinks] = useState(false);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [hideImages, setHideImages] = useState(false);
-  const [pauseAnim, setPauseAnim] = useState(false);
 
   // Apply classes to document root and body
   useEffect(() => {
@@ -41,7 +40,6 @@ export default function UX4GDrawer({
       { active: highlightLinks, name: 'ux4g-highlight-links' },
       { active: dyslexiaFont, name: 'ux4g-dyslexia' },
       { active: hideImages, name: 'ux4g-hide-images' },
-      { active: pauseAnim, name: 'ux4g-pause-anim' },
     ].forEach(({ active, name }) => {
       if (active) {
         root.classList.add(name);
@@ -51,7 +49,7 @@ export default function UX4GDrawer({
         body.classList.remove(name);
       }
     });
-  }, [colorMode, biggerText, lineHeight, textSpacing, highlightLinks, dyslexiaFont, hideImages, pauseAnim]);
+  }, [colorMode, biggerText, lineHeight, textSpacing, highlightLinks, dyslexiaFont, hideImages]);
 
   const handleReset = () => {
     setColorMode('normal');
@@ -61,7 +59,6 @@ export default function UX4GDrawer({
     setHighlightLinks(false);
     setDyslexiaFont(false);
     setHideImages(false);
-    setPauseAnim(false);
   };
 
   if (!isOpen) return null;
@@ -174,28 +171,12 @@ export default function UX4GDrawer({
                 <span className="tile-label">{t.dyslexiaFont || "Dyslexia Friendly"}</span>
               </button>
 
-            </div>
-          </div>
-
-          {/* Section 3: Orientation & Assistive Tools */}
-          <div className="ux4g-section-group">
-            <h4 className="ux4g-section-title">{t.assistiveTools || "Orientation & Assistive Tools"}</h4>
-            <div className="ux4g-tiles-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-              
               <button 
                 className={`ux4g-tile-btn ${hideImages ? 'active' : ''}`}
                 onClick={() => setHideImages(!hideImages)}
               >
                 <span className="tile-icon">🚫🖼️</span>
                 <span className="tile-label">{t.hideImages || "Hide Images"}</span>
-              </button>
-
-              <button 
-                className={`ux4g-tile-btn ${pauseAnim ? 'active' : ''}`}
-                onClick={() => setPauseAnim(!pauseAnim)}
-              >
-                <span className="tile-icon">⏸️</span>
-                <span className="tile-label">{t.pauseAnimation || "Pause Animation"}</span>
               </button>
 
             </div>
