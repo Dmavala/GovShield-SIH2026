@@ -5,6 +5,13 @@ export const metadata = {
   description: 'AI-Powered Citizen Phishing & Fake Government Portal Detection System (SIH 2026)',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#5c3cf6',
+}
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

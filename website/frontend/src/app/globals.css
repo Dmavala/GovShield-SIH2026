@@ -1180,3 +1180,232 @@ body.ux4g-dark-mode .ux4g-drawer-footer {
   object-fit: cover;
   display: block;
 }
+
+/* ==========================================================================
+   Comprehensive Vertical & Mobile Device Optimization (Android / iOS / Tablets)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* Top Bar */
+  .ux4g-top-bar {
+    padding: 8px 16px;
+  }
+  .ux4g-top-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .top-right-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Nav Header */
+  .ux4g-nav-header {
+    padding: 12px 16px;
+  }
+  .ux4g-nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .ux4g-brand-group {
+    width: 100%;
+  }
+  .nav-cta-group {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+  .nav-cta-group .btn-secondary-ux4g,
+  .nav-cta-group .btn-primary-ux4g {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 0.84rem;
+  }
+
+  /* Hero Section */
+  .ux4g-hero-section {
+    padding: 40px 16px 36px;
+  }
+  .ux4g-hero-heading {
+    font-size: clamp(1.75rem, 6.5vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+  .ux4g-hero-subtext {
+    font-size: 0.98rem;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  /* Search Input Card */
+  .ux4g-search-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+  .ux4g-search-input {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 8px 6px;
+  }
+  .verify-action-btn {
+    width: 100%;
+    padding: 13px;
+    font-size: 1rem;
+    border-radius: 8px;
+    justify-content: center;
+  }
+
+  /* Quick Demo Chips */
+  .ux4g-chips-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .chips-tag-label {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .ux4g-sample-chip {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+
+  /* Verdict Scan Results Box */
+  .ux4g-verdict-section {
+    padding: 0 12px;
+    margin: 20px auto 32px;
+  }
+  .verdict-header-banner {
+    padding: 18px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .verdict-main-meta {
+    width: 100%;
+    gap: 12px;
+  }
+  .verdict-icon-badge {
+    font-size: 2.2rem;
+  }
+  .verdict-status-title {
+    font-size: 1.35rem;
+  }
+  .verdict-status-sub {
+    font-size: 0.88rem;
+  }
+  .btn-speech-trigger {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 0.92rem;
+  }
+  .verdict-layout-grid {
+    grid-template-columns: 1fr;
+    padding: 18px 14px;
+    gap: 24px;
+  }
+  .threat-gauge-box {
+    padding: 18px 14px;
+  }
+  .forensic-tile-item {
+    padding: 14px;
+    gap: 10px;
+  }
+  .tile-header-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .tile-status-tag {
+    align-self: flex-start;
+  }
+
+  /* Citizen Cards */
+  .ux4g-cards-section {
+    padding: 36px 16px;
+  }
+  .cards-headline-title {
+    font-size: 1.5rem;
+  }
+  .cards-headline-sub {
+    font-size: 0.92rem;
+  }
+  .ux4g-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .card-banner-graphic-custom {
+    height: 170px;
+  }
+  .card-text-body {
+    padding: 20px 18px;
+  }
+  .card-cta-button {
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  /* Accessibility Drawer on Mobile */
+  .ux4g-drawer-panel {
+    width: 100vw;
+    max-width: 100vw;
+  }
+  .ux4g-tiles-grid.cols-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .ux4g-tile-btn {
+    padding: 14px 10px;
+    min-height: 72px;
+  }
+
+  /* Floating Accessibility FAB */
+  .ux4g-fab-btn {
+    bottom: 18px;
+    right: 18px;
+    width: 50px;
+    height: 50px;
+  }
+  .fab-icon {
+    font-size: 1.3rem;
+  }
+
+  /* Footer */
+  .ux4g-portal-footer {
+    padding: 36px 16px 20px;
+  }
+  .footer-main-columns {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-title-ux4g {
+    font-size: 1.2rem;
+  }
+  .brand-subtitle-ux4g {
+    font-size: 0.72rem;
+  }
+  .ux4g-hero-heading {
+    font-size: 1.5rem;
+  }
+  .ux4g-tiles-grid.cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
