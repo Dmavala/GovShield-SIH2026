@@ -1,7 +1,109 @@
 /**
  * GovShield Sentinel Grid - Extension Popup Script (SIH 2026)
- * 100% Standalone Client-Side Architecture with Voice Audio & Bilingual Support
+ * Upgraded Natural AI Speech Engine with Acoustic Audio Chimes
  */
+
+// Acoustic Web Audio Tone Generator
+function playAcousticAlert(type = 'safe') {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    if (type === 'threat') {
+      const now = ctx.currentTime;
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(880, now);
+      osc1.frequency.exponentialRampToValueAtTime(440, now + 0.15);
+      gain1.gain.setValueAtTime(0.25, now);
+      gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.18);
+
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sawtooth';
+      osc2.frequency.setValueAtTime(987.77, now + 0.22);
+      osc2.frequency.exponentialRampToValueAtTime(493.88, now + 0.4);
+      gain2.gain.setValueAtTime(0.25, now + 0.22);
+      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.42);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.22);
+      osc2.stop(now + 0.42);
+    } else if (type === 'caution') {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(440.00, now + 0.15);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, now);
+      osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.12);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    }
+  } catch (e) {
+    console.debug("Audio synthesis skipped:", e);
+  }
+}
+
+// Select Best Natural Voice
+function selectBestVoice(lang = 'hi') {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  if (lang === 'hi') {
+    const hiVoice = voices.find(v => 
+      v.lang.startsWith('hi') || 
+      v.name.includes('Hindi') || 
+      v.name.includes('Lekha') || 
+      v.name.includes('Swara') || 
+      v.name.includes('Madhur') ||
+      v.name.includes('हिन्दी')
+    );
+    if (hiVoice) return hiVoice;
+
+    const inVoice = voices.find(v => v.lang === 'en-IN' || v.name.includes('India') || v.name.includes('Rishi') || v.name.includes('Veena'));
+    if (inVoice) return inVoice;
+  } else {
+    const naturalEnVoice = voices.find(v => 
+      v.lang.startsWith('en') && (
+        v.name.includes('Natural') || 
+        v.name.includes('Google') || 
+        v.name.includes('Samantha') || 
+        v.name.includes('Siri') ||
+        v.name.includes('Daniel') ||
+        v.name.includes('Rishi')
+      )
+    );
+    if (naturalEnVoice) return naturalEnVoice;
+
+    const enVoice = voices.find(v => v.lang.startsWith('en'));
+    if (enVoice) return enVoice;
+  }
+  return voices[0] || null;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   // Elements
@@ -27,9 +129,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const contrastToggleBtn = document.getElementById("contrastToggleBtn");
 
   let currentScanData = null;
-  let currentLang = "hi"; // default Hindi for national accessibility
+  let currentLang = "hi";
   let isSpeaking = false;
   let isHighContrast = false;
+
+  // Preload voices
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
 
   const i18n = {
     hi: {
@@ -115,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Voice Narration (Text-to-Speech)
+  // Enhanced Natural Speech Engine
   if (btnVoiceAudio) {
     btnVoiceAudio.addEventListener("click", () => {
       if (!('speechSynthesis' in window)) {
@@ -133,28 +241,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!currentScanData) return;
 
+      // Play instant acoustic chime
+      if (currentScanData.risk_score >= 66 || currentScanData.verdict === "PHISHING_CLONE") {
+        playAcousticAlert('threat');
+      } else if (currentScanData.risk_score <= 25 || currentScanData.verdict === "LEGITIMATE") {
+        playAcousticAlert('safe');
+      } else {
+        playAcousticAlert('caution');
+      }
+
       let textToSpeak = "";
       if (currentLang === "hi") {
         if (currentScanData.risk_score >= 66 || currentScanData.verdict === "PHISHING_CLONE") {
-          textToSpeak = "सावधान! यह वेबसाइट फर्जी एवं धोखाधड़ी से भरी है। यह सरकारी पोर्टल नहीं है। कृपया अपना आधार, पैन या बैंक विवरण कभी दर्ज न करें। सहायता के लिए तुरंत 1930 पर कॉल करें।";
+          textToSpeak = "सावधान! ... यह वेबसाइट पूरी तरह फर्जी है, और सरकारी पोर्टल की नकल कर रही है। ... कृपया अपना आधार नंबर, बैंक विवरण या ओटीपी कभी भी साझा न करें। ... तुरंत 1930 साइबर हेल्पलाइन पर कॉल करें।";
         } else if (currentScanData.risk_score <= 25 || currentScanData.verdict === "LEGITIMATE") {
-          textToSpeak = "यह वेबसाइट पूरी तरह से सुरक्षित एवं प्रामाणिक सरकारी पोर्टल है।";
+          textToSpeak = "सत्यापित! ... यह भारत सरकार का प्रामाणिक और सुरक्षित आधिकारिक पोर्टल है।";
         } else {
-          textToSpeak = "सतर्क रहें! यह वेबसाइट संदिग्ध है और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है।";
+          textToSpeak = "सतर्क रहें! ... यह वेबसाइट संदिग्ध है और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है।";
         }
       } else {
         if (currentScanData.risk_score >= 66 || currentScanData.verdict === "PHISHING_CLONE") {
-          textToSpeak = "Critical Warning! This website is a fake phishing clone. Never enter your Aadhaar, bank details, or OTP. Call 1930 immediately.";
+          textToSpeak = "Critical Warning! ... This website is a fraudulent clone mimicking government services. ... Never enter your Aadhaar, bank details, or OTP. ... Call Helpline 1930 immediately!";
         } else if (currentScanData.risk_score <= 25 || currentScanData.verdict === "LEGITIMATE") {
-          textToSpeak = "Verified Authentic. This domain belongs to genuine Government of India infrastructure.";
+          textToSpeak = "Verified Authentic! ... This domain belongs to genuine Government of India sovereign infrastructure.";
         } else {
-          textToSpeak = "Caution! This website shows suspicious indicators and is not verified as an official government portal.";
+          textToSpeak = "Caution! ... This website contains suspicious indicators and is unverified on the official government registry.";
         }
       }
 
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       utterance.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
-      utterance.rate = 0.95;
+      utterance.rate = 0.88;
+      utterance.pitch = 1.04;
+
+      const bestVoice = selectBestVoice(currentLang);
+      if (bestVoice) {
+        utterance.voice = bestVoice;
+      }
+
       utterance.onend = () => {
         isSpeaking = false;
         btnVoiceAudio.classList.remove("playing");
@@ -170,7 +294,9 @@ document.addEventListener("DOMContentLoaded", () => {
       btnVoiceAudio.classList.add("playing");
       if (audioBtnText) audioBtnText.textContent = i18n[currentLang].audioStop;
       window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 150);
     });
   }
 
@@ -179,7 +305,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentScanData = data;
     const t = i18n[currentLang];
 
-    // Score formatting
     if (scoreNumber) {
       const score = Number(data.risk_score) || 0;
       scoreNumber.textContent = score < 10 ? `0${score}` : `${score}`;
@@ -192,12 +317,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Headline
     if (urlHeadline) {
       urlHeadline.textContent = displayUrl || data.url || "Active Tab";
     }
 
-    // Verdict Badge
     if (verdictBadge) {
       if (data.verdict === "PHISHING_CLONE" || data.risk_score >= 66) {
         verdictBadge.textContent = t.verdictThreat;
@@ -211,12 +334,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Summary
     if (verdictSummary) {
       verdictSummary.textContent = data.summary || t.evaluating;
     }
 
-    // Advisory
     if (remediationText) {
       if (data.verdict === "PHISHING_CLONE" || data.risk_score >= 66) {
         remediationText.textContent = t.advisoryThreat;
@@ -227,7 +348,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // 5 Inspection Steps
     if (inspectionSteps) {
       inspectionSteps.innerHTML = "";
       const breakdown = data.signal_breakdown || {};

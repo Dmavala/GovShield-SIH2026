@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { scanWebsiteClientSide } from './lib/scannerEngine';
+import { playAcousticAlert, selectBestVoice } from './lib/audioSynthesizer';
 
 // National Ashoka Emblem SVG Component
 const AshokaEmblem = () => (
@@ -51,6 +52,7 @@ const translations = {
     riskScoreLabel: "जोखिम स्कोर (Threat Score)",
     officialRegistry: "आधिकारिक सरकारी रजिस्ट्री",
     tldChecked: "सत्यापित .gov.in / .nic.in डोमेन",
+    voiceSpeakingBanner: "🎙️ एआई साइबर वाणी सहायक बोल रहा है...",
     
     advisoryTitle: "नागरिक सुरक्षा सलाह (Advisory):",
     advisorySafe: "यह वेबसाइट पूरी तरह से प्रामाणिक और आधिकारिक सरकारी पोर्टल है। आप इस पर विश्वास के साथ कार्य कर सकते हैं।",
@@ -123,6 +125,7 @@ const translations = {
     riskScoreLabel: "Threat Risk Score",
     officialRegistry: "Official Government Registry",
     tldChecked: "Authenticated .gov.in / .nic.in domain",
+    voiceSpeakingBanner: "🎙️ AI Cyber Voice Assistant Speaking...",
 
     advisoryTitle: "Citizen Security Advisory:",
     advisorySafe: "This website is verified as an authentic Government of India portal. It is safe to use.",
@@ -191,7 +194,17 @@ export default function HomePage() {
     }
   }, [fontScale, highContrast]);
 
-  // Voice Narration (Text-to-Speech) for Non-Literate / Visually Impaired Citizens
+  // Preload speech synthesis voices on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  }, []);
+
+  // Enhanced Natural Human-Like Speech Engine
   const handleSpeakVerdict = () => {
     if (!('speechSynthesis' in window)) {
       alert("Text-to-speech is not supported on this browser.");
@@ -206,34 +219,55 @@ export default function HomePage() {
 
     if (!result) return;
 
+    // 1. Play instant acoustic chime for instant comprehension
+    if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
+      playAcousticAlert('threat');
+    } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
+      playAcousticAlert('safe');
+    } else {
+      playAcousticAlert('caution');
+    }
+
+    // 2. Build expressive, natural pacing script
     let textToSpeak = "";
     if (lang === 'hi') {
       if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
-        textToSpeak = `सावधान! यह वेबसाइट फर्जी एवं धोखाधड़ी से भरी है। यह सरकारी पोर्टल नहीं है। कृपया अपना आधार, पैन या बैंक विवरण कभी दर्ज न करें। सहायता के लिए तुरंत 1930 पर कॉल करें।`;
+        textToSpeak = `सावधान! ... यह वेबसाइट पूरी तरह फर्जी है, और सरकारी पोर्टल की नकल कर रही है। ... कृपया अपना आधार नंबर, बैंक विवरण या ओटीपी कभी भी साझा न करें। ... वित्तीय नुकसान से बचने के लिए तुरंत 1930 राष्ट्रीय साइबर हेल्पलाइन पर कॉल करें।`;
       } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
-        textToSpeak = `यह वेबसाइट पूरी तरह से सुरक्षित एवं प्रामाणिक सरकारी पोर्टल है। आप इस पर विश्वास के साथ कार्य कर सकते हैं।`;
+        textToSpeak = `सत्यापित! ... यह भारत सरकार का प्रामाणिक और सुरक्षित आधिकारिक पोर्टल है। ... आप इस पर विश्वास के साथ सुरक्षित रूप से अपना कार्य कर सकते हैं।`;
       } else {
-        textToSpeak = `सतर्क रहें! यह वेबसाइट संदिग्ध है और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है।`;
+        textToSpeak = `सतर्क रहें! ... यह वेबसाइट संदिग्ध है, और आधिकारिक सरकारी डोमेन से सत्यापित नहीं है। ... कोई भी गोपनीय जानकारी दर्ज करने से पहले पूरी जांच अवश्य करें।`;
       }
     } else {
       if (result.risk_score >= 66 || result.verdict === 'PHISHING_CLONE') {
-        textToSpeak = `Critical Warning! This website is a fake phishing clone impersonating government services. Never enter your Aadhaar, bank details, or OTP. Call 1930 immediately.`;
+        textToSpeak = `Critical Warning! ... This website is a fraudulent lookalike clone mimicking government services. ... Never enter your Aadhaar, bank credentials, or OTP here. ... Call National Cyber Helpline 1930 immediately!`;
       } else if (result.risk_score <= 25 || result.verdict === 'LEGITIMATE') {
-        textToSpeak = `Verified Authentic. This website belongs to genuine Government of India infrastructure.`;
+        textToSpeak = `Verified Authentic! ... This website belongs to official Government of India sovereign infrastructure. ... It is safe for all citizen transactions.`;
       } else {
-        textToSpeak = `Caution! This website shows suspicious indicators and is not verified as an official government portal.`;
+        textToSpeak = `Caution! ... This website contains suspicious indicators and is unverified on the official government registry.`;
       }
     }
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-    utterance.rate = 0.95;
+    utterance.rate = 0.88; // Slower, clearer cadence for maximum comprehension
+    utterance.pitch = 1.04; // Natural, pleasant pitch
+
+    // Dynamically assign highest fidelity natural voice
+    const bestVoice = selectBestVoice(lang);
+    if (bestVoice) {
+      utterance.voice = bestVoice;
+    }
+
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
 
     setIsSpeaking(true);
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    // 150ms delay to let acoustic chime ring first
+    setTimeout(() => {
+      window.speechSynthesis.speak(utterance);
+    }, 150);
   };
 
   // Speech Recognition (Mic Voice Input)
@@ -269,7 +303,7 @@ export default function HomePage() {
     }
   };
 
-  // Standalone Instant Client-Side Scan (Zero Backend Server dependency)
+  // Standalone Instant Client-Side Scan
   const handleScan = (overrideUrl) => {
     const targetUrl = overrideUrl || url;
     if (!targetUrl || !targetUrl.trim()) return;
@@ -279,7 +313,6 @@ export default function HomePage() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsSpeaking(false);
 
-    // Simulate real-time neural multi-modal scan with 250ms visual inspection delay
     setTimeout(() => {
       try {
         const scanOutput = scanWebsiteClientSide(targetUrl);
@@ -506,6 +539,25 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
         {result && (
           <div className="verdict-master-card" role="region" aria-live="polite">
             
+            {/* Animated Soundwave Bar while Speaking */}
+            {isSpeaking && (
+              <div className="voice-assistant-active-bar">
+                <div className="voice-status-group">
+                  <div className="voice-soundwave-animation">
+                    <span className="wave-bar" />
+                    <span className="wave-bar" />
+                    <span className="wave-bar" />
+                    <span className="wave-bar" />
+                    <span className="wave-bar" />
+                  </div>
+                  <span className="voice-assistant-label">{t.voiceSpeakingBanner}</span>
+                </div>
+                <button type="button" className="voice-stop-chip" onClick={handleSpeakVerdict}>
+                  ✕ {t.stopAudio}
+                </button>
+              </div>
+            )}
+
             {/* Top Verdict Banner */}
             <div className={`verdict-banner-header ${currentStatus.type}`}>
               <div className="verdict-lead-group">
@@ -524,7 +576,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
                   type="button" 
                   className={`btn-voice-audio ${isSpeaking ? 'playing' : ''}`}
                   onClick={handleSpeakVerdict}
-                  aria-label="Listen to verdict audio in selected language"
+                  aria-label="Listen to verdict audio in natural voice"
                 >
                   {isSpeaking ? '🔊 ' + t.stopAudio : '🔊 ' + t.listenAudio}
                 </button>
