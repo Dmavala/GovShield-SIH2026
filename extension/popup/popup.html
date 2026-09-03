@@ -3,48 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GovShield | Indian Sovereign Phishing Detector (SIH)</title>
+    <title>GovShield Sentinel | National Cyber Defense (SIH)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Top Bar / Micro Header -->
+        <!-- National Tricolor Stripe -->
+        <div class="tricolor-stripe"></div>
+
+        <!-- Top Header & Accessibility Bar -->
         <header class="top-bar">
             <div class="brand-row">
-                <span class="brand-main">GovShield</span>
-                <span class="brand-sub">SIH·26</span>
+                <span class="flag-icon">🇮🇳</span>
+                <div class="brand-text-col">
+                    <span class="brand-main">GovShield</span>
+                    <span class="brand-sub">SIH 2026 • SIH1454</span>
+                </div>
             </div>
-            <div class="status-pill" id="statusPill">
-                <span class="status-dot"></span>
-                <span id="engineLabel">Online</span>
+            
+            <div class="header-tools">
+                <button id="langToggleBtn" class="tool-btn" title="Switch Language">🌐 हिंदी</button>
+                <button id="contrastToggleBtn" class="tool-btn" title="High Contrast">👁️</button>
             </div>
         </header>
 
-        <!-- URL Scanner Core -->
+        <!-- Scanner Main Area -->
         <main class="scanner-section">
-            <!-- Search Box -->
+            <!-- Search Bar -->
             <div class="search-box-minimal">
                 <input 
                     type="url" 
                     id="urlInput" 
                     class="url-input-clean" 
-                    placeholder="Enter website URL..." 
+                    placeholder="Enter website URL / लिंक दर्ज करें..." 
                     autocomplete="off"
                     spellcheck="false"
                 >
                 <button id="scanBtn" class="btn-scan-action">
-                    <span>Inspect</span> ↵
+                    <span id="scanBtnLabel">Inspect</span> ↵
                 </button>
             </div>
 
             <!-- Dynamic Result Card -->
             <div id="resultsWrapper">
                 <div class="verdict-card-minimal">
+                    
                     <!-- Verdict Header -->
-                    <div class="verdict-header-block">
+                    <div class="verdict-header-block" id="verdictHeaderBlock">
                         <div class="verdict-number-row">
                             <div class="giant-score" id="scoreNumber">00</div>
                             <div class="verdict-text-group">
@@ -53,9 +61,14 @@
                                 <p class="verdict-summary-line" id="verdictSummary">Evaluating domain against national cyber defense baseline...</p>
                             </div>
                         </div>
-                        <div class="verdict-actions">
-                            <button id="btnQuickDossier" class="btn-dossier-pill">
-                                <span>📄</span> Copy Incident Report
+
+                        <!-- Top Quick Actions (Audio Playback & Dossier) -->
+                        <div class="verdict-actions-row">
+                            <button id="btnVoiceAudio" class="btn-audio-pill" title="Listen Audio Narration">
+                                🔊 <span id="audioBtnText">Listen Audio</span>
+                            </button>
+                            <button id="btnQuickDossier" class="btn-dossier-pill" title="Copy Legal Dossier">
+                                📄 <span id="dossierBtnText">CERT-In Dossier</span>
                             </button>
                         </div>
                     </div>
@@ -65,10 +78,15 @@
                         <!-- Injected dynamically -->
                     </div>
 
-                    <!-- Citizen Advisory -->
-                    <div class="advisory-footer">
-                        <span style="font-weight: 700; color: var(--text-pure);">ADVISORY:</span>
-                        <span id="remediationText" style="flex: 1;">Citizen advice loading...</span>
+                    <!-- Citizen Advisory & Helpline Callout -->
+                    <div class="advisory-footer" id="advisoryFooter">
+                        <div class="advisory-text-wrapper">
+                            <span style="font-weight: 800; color: var(--text-pure);" id="advisoryPrefix">ADVISORY:</span>
+                            <span id="remediationText" style="flex: 1;">Citizen safety evaluation loading...</span>
+                        </div>
+                        <a href="tel:1930" class="btn-helpline-chip" title="Call Cyber Crime Helpline 1930">
+                            📞 1930 Helpline
+                        </a>
                     </div>
                 </div>
             </div>
@@ -79,13 +97,13 @@
     <div id="dossierModal" class="modal-overlay">
         <div class="modal-content-clean">
             <div class="modal-top">
-                <span class="modal-title-clean">CERT-In Incident Takedown Report</span>
+                <span class="modal-title-clean">📄 CERT-In Incident Takedown Dossier</span>
                 <button id="modalCloseBtn" class="modal-close-x">&times;</button>
             </div>
             <pre id="dossierText" class="dossier-code-box"></pre>
-            <div style="display: flex; justify-content: flex-end;">
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
                 <button id="copyDossierBtn" class="btn-scan-action">
-                    Copy Report to Clipboard
+                    📋 Copy Report to Clipboard
                 </button>
             </div>
         </div>

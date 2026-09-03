@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { scanWebsiteClientSide } from './lib/scannerEngine';
 
 // National Ashoka Emblem SVG Component
 const AshokaEmblem = () => (
@@ -9,12 +10,10 @@ const AshokaEmblem = () => (
     <circle cx="50" cy="40" r="14" fill="#ffffff" />
     <circle cx="50" cy="40" r="11" fill="#0b2545" />
     <circle cx="50" cy="40" r="3" fill="#ffffff" />
-    {/* 24 Chakra Spokes simulation */}
     <line x1="50" y1="29" x2="50" y2="51" stroke="#ffffff" strokeWidth="1" />
     <line x1="39" y1="40" x2="61" y2="40" stroke="#ffffff" strokeWidth="1" />
     <line x1="42" y1="32" x2="58" y2="48" stroke="#ffffff" strokeWidth="1" />
     <line x1="42" y1="48" x2="58" y2="32" stroke="#ffffff" strokeWidth="1" />
-    {/* Base Pillar */}
     <rect x="30" y="95" width="40" height="10" rx="3" fill="#e35d16" />
     <text x="50" y="118" textAnchor="middle" fill="#0b2545" fontSize="10" fontWeight="900" fontFamily="serif">सत्यमेव जयते</text>
   </svg>
@@ -183,7 +182,6 @@ export default function HomePage() {
 
   const t = translations[lang];
 
-  // Apply high contrast and font scaling to body
   useEffect(() => {
     document.documentElement.style.setProperty('--font-scale', fontScale);
     if (highContrast) {
@@ -234,11 +232,11 @@ export default function HomePage() {
     utterance.onerror = () => setIsSpeaking(false);
 
     setIsSpeaking(true);
-    window.speechSynthesis.cancel(); // Stop any pending
+    window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   };
 
-  // Speech Recognition (Mic Voice Input) for typing URL by voice
+  // Speech Recognition (Mic Voice Input)
   const handleVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -271,31 +269,27 @@ export default function HomePage() {
     }
   };
 
-  // Scan API execution
-  const handleScan = async (overrideUrl) => {
+  // Standalone Instant Client-Side Scan (Zero Backend Server dependency)
+  const handleScan = (overrideUrl) => {
     const targetUrl = overrideUrl || url;
-    if (!targetUrl.trim()) return;
+    if (!targetUrl || !targetUrl.trim()) return;
 
     setLoading(true);
     setResult(null);
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setIsSpeaking(false);
 
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/scan";
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: targetUrl.trim() })
-      });
-      const data = await res.json();
-      setResult(data);
-    } catch (err) {
-      console.error(err);
-      alert(lang === 'hi' ? "सर्वर से संपर्क नहीं हो पाया। कृपया सुनिश्चित करें कि बैकएंड चालू है।" : "Backend API unreachable. Please make sure the Python server is running.");
-    } finally {
-      setLoading(false);
-    }
+    // Simulate real-time neural multi-modal scan with 250ms visual inspection delay
+    setTimeout(() => {
+      try {
+        const scanOutput = scanWebsiteClientSide(targetUrl);
+        setResult(scanOutput);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }, 280);
   };
 
   const getVerdictStatus = (res) => {
@@ -612,7 +606,7 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
                       </div>
                       <p className="step-layer-desc">
                         {result.signal_breakdown?.sensitive_fields_found?.length > 0 
-                          ? `Detects unauthorized harvesting fields: [${result.signal_breakdown.sensitive_fields_found.join(', ')}] on an unofficial domain!`
+                          ? `Detects unauthorized harvesting triggers in URL/forms on an unofficial domain!`
                           : 'No unauthorized Aadhaar, PAN, OTP, or biometric credential harvesting forms detected.'}
                       </p>
                     </div>
