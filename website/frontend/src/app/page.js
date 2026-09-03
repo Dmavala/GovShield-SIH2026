@@ -6,6 +6,7 @@ import { playAcousticAlert, selectBestVoice } from './lib/audioSynthesizer';
 import { INDIC_LANGUAGES, UX4G_STRINGS } from './lib/ux4gLanguages';
 import UX4GDrawer from './components/UX4GDrawer';
 import LanguageDropdown from './components/LanguageDropdown';
+import { WomenChildGraphic, FinancialFraudGraphic, CyberCrimeGraphic } from './components/CitizenCardGraphics';
 
 // Sovereign Emblem Component
 const AshokaEmblem = () => (
@@ -460,8 +461,8 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
         <div className="ux4g-cards-grid">
           {/* Card 1: Women & Child */}
           <div className="ux4g-card-item">
-            <div className="card-header-art art-1">
-              <span className="art-emoji">👩‍👧‍👦</span>
+            <div className="card-banner-graphic-custom">
+              <WomenChildGraphic />
             </div>
             <div className="card-text-body">
               <h4 className="card-title-header">{t.card1Title}</h4>
@@ -474,8 +475,8 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
 
           {/* Card 2: Financial Fraud */}
           <div className="ux4g-card-item">
-            <div className="card-header-art art-2">
-              <span className="art-emoji">💳</span>
+            <div className="card-banner-graphic-custom">
+              <FinancialFraudGraphic />
             </div>
             <div className="card-text-body">
               <h4 className="card-title-header">{t.card2Title}</h4>
@@ -488,8 +489,8 @@ ${(result.reasons || []).map((r, i) => `[${i + 1}] ${r}`).join('\n') || 'None de
 
           {/* Card 3: CERT-In Dossier */}
           <div className="ux4g-card-item">
-            <div className="card-header-art art-3">
-              <span className="art-emoji">🛡️</span>
+            <div className="card-banner-graphic-custom">
+              <CyberCrimeGraphic />
             </div>
             <div className="card-text-body">
               <h4 className="card-title-header">{t.card3Title}</h4>
