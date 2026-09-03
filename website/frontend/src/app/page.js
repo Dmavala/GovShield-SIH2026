@@ -14,7 +14,6 @@ const AshokaEmblem = () => (
     src="/logo.png" 
     alt="GovShield National Cyber Defense Emblem" 
     className="emblem-icon-ux4g"
-    style={{ objectFit: 'contain', width: '46px', height: '54px' }}
   />
 );
 

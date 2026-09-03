@@ -83,9 +83,10 @@ body.high-contrast .top-bar {
   gap: 10px;
 }
 .brand-logo-img {
-  width: 28px;
-  height: 34px;
+  width: 36px;
+  height: 46px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
 }
 .brand-text-col {
   display: flex;
